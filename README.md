@@ -42,7 +42,7 @@ Isı haritaları, modelin şüpheli bölgeleri nasıl tespit ettiğini açıklar
 
 ---
 
-#### 👄 3) Ağız Kareleri (BN vs DF)
+### 👄 3) Ağız Kareleri (BN vs DF)
 Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri.  
 Dudak senkronizasyonundaki tutarsızlıklar görsel olarak karşılaştırılır.
 
@@ -54,7 +54,6 @@ Dudak senkronizasyonundaki tutarsızlıklar görsel olarak karşılaştırılır
 <p align="center">
   <em>Sol: Gerçek (BN) — Sağ: Deepfake (DF)</em>
 </p>
-
 
 ---
 
@@ -87,6 +86,7 @@ Analiz sonuçları otomatik olarak PDF raporu şeklinde dışa aktarılır.
 <p align="center">
   <em>Otomatik oluşturulan analiz raporu (PDF)</em>
 </p>
+
 ---
 
 ### 📊 6) Parametre Grafikleri
@@ -97,6 +97,7 @@ Skorlar ve eşik değerleri grafiksel olarak sunularak model davranışı şeffa
 </p>
 
 ---
+
 
 ## 🎥 7) Demo (Uçtan Uca)
 Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo.
