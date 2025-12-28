@@ -8,20 +8,28 @@ Amaç yalnızca *“fake mi?”* demek değil,
 **“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
 
 ---
-## 🎬 Demo & Çıktılar
+## 📸 Screenshots & Outputs
 
-▶️ Full video:  
-### 📺 Arayüz – Video Analizi
-![UI Demo](assets/screenshots/ui_demo.png)
+### 🖥️ Arayüz
+![UI](screenshots/1_arayuz.png)
 
-### 📊 Skor Görselleştirme (Gauge / Probability)
-![Score Gauge](assets/screenshots/score_gauge.png)
+### 👄 Ağız Kareleri (BN vs DF)
+![BN](screenshots/agiz_kareleri_bn.png)
+![DF](screenshots/agiz_kareleri_df.png)
 
-### 🧠 Açıklanabilirlik (Grad-CAM)
-![GradCAM](assets/screenshots/gradcam.png)
+### 🔍 Explainability (Grad-CAM)
+![GradCAM](screenshots/grandcam.png)
+![GradCAM-BN](screenshots/grandcam_bn.jpg)
 
-### 👄 Lip-Sync Analizi
-![Lip Sync](assets/screenshots/lip_sync.png)
+### 🧠 LLM Yorumları
+![LLM](screenshots/df_llm_yaniti.jpeg)
+![Routing](screenshots/hangi_dosyada_llm_bagladim.png)
+
+### 📊 Parametre Grafikleri
+![Params](screenshots/parametre_grafikleri.png)
+
+### 🎥 Demo
+[Demo videosu](screenshots/demo_videosu.mp4)
 
 > 📌 Yukarıdaki görseller **gerçek çalışma çıktılarıdır**.
 
