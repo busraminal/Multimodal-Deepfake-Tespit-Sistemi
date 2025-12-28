@@ -208,7 +208,5 @@ Ostim Teknik Üniversitesi
 
 
 
-# TEST
 
-![TEST](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/1_arayuz.png)
 
