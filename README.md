@@ -1,162 +1,114 @@
-
-# 🎭 Multimodal Deepfake Detection System  
+# 🎭 Multimodal Deepfake Detection System
 **Vision • Audio • Lip-Sync • Explainability • LLM Support**
 
-Bu proje, **deepfake videolarını çoklu modalite (görüntü + ses + dudak–ses senkronu)** üzerinden analiz eden,  
+Bu proje, **deepfake videolarını çoklu modalite (görüntü + ses + dudak–ses senkronu)** üzerinden analiz eden,
 **açıklanabilir (XAI)** ve **uçtan uca çalışan** bir yapay zeka sistemidir.
 
-Amaç yalnızca *“fake mi?”* demek değil;  
+Amaç yalnızca *“fake mi?”* demek değil;
 **“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
 
+---
+
 ## 🔎 Quick Facts
-- **Task:** Multimodal Deepfake Detection
-- **Modalities:** Vision, Audio, Lip-Sync
-- **Explainability:** Grad-CAM + LLM
-- **Output:** Score + Human-readable explanation + PDF report
-- **Status:** Research / Prototype
----
-
-## 🎯 Multimodal Deepfake Tespit Sistemi — Vitrin
-
-> 📌 Aşağıda sunulan tüm görseller ve çıktılar, geliştirilen sistemin  
-> **gerçek zamanlı çalışması sırasında elde edilen çıktılardır**.
+- **Görev:** Multimodal Deepfake Tespiti
+- **Modaliteler:** Görüntü, Ses, Dudak–Ses Senkronu
+- **Açıklanabilirlik:** Grad-CAM + LLM
+- **Çıktılar:** Skor + İnsan-okur açıklama + PDF raporu
+- **Durum:** Araştırma / Prototip
 
 ---
 
-## 🖥️ 1) Arayüz (UI)
+## 🎯 Vitrin
+> Aşağıdaki tüm görseller ve çıktılar, sistemin **gerçek zamanlı** çalışması sırasında elde edilmiştir.
 
-Sistem, yüklenen video için **görüntü**, **ses** ve **dudak–ses senkronizasyonu** analizlerini  
-**paralel (eş zamanlı)** olarak çalıştırır ve tüm çıktıları **tek bir panelde** sunar.
+### 🖥️ Arayüz (UI)
+Sistem, yüklenen video için **görüntü**, **ses** ve **dudak–ses senkronizasyonu** analizlerini
+**paralel** olarak çalıştırır ve tüm çıktıları **tek bir panelde** sunar.
 
 ![Arayüz](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/1_arayüz.png)
 
-*Multimodal analiz sonuçlarının, skorların ve açıklamaların tek bir arayüzde sunulması.*
-
 ---
 
-## 🔍 2) Explainability — Grad-CAM
+### 🔍 Explainability — Grad-CAM
+CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri **Grad-CAM** ile görselleştirilir.
 
-CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri  
-**Grad-CAM** yöntemi ile görselleştirilmiştir.  
-Isı haritaları, modelin deepfake kararını verirken hangi bölgeleri **ayırt edici** bulduğunu gösterir.
-
-| Deepfake Örneği | Gerçek (BN) |
-|-----------------|-------------|
+| Deepfake | Gerçek (BN) |
+|---|---|
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam_bn.jpg) |
 
-*Sol: Deepfake videoda anormal odaklanmalar — Sağ: Gerçek videoda daha dengeli aktivasyonlar.*
+![Arayüz Yorumu](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png)
 
-Çıktı arayüz yorumu: Neden, hangi parametre yüzünden sorularına cevap 
-| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png) |
-
-## ⚠️ Explainability Scope
-- Explanations are **post-hoc**, not causal
-- Grad-CAM highlights discriminative regions, not ground truth
-- LLM explanations are conditioned on model outputs
+**Açıklanabilirlik Kapsamı**
+- Açıklamalar **post-hoc**tur; nedensel değildir.
+- Grad-CAM ayırt edici bölgeleri vurgular, mutlak doğruluk göstermez.
+- LLM açıklamaları model çıktılarıyla koşulludur.
 
 ---
 
-## 👄 3) Ağız Kareleri (BN vs DF)
-
-Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri gösterilmektedir.  
-Dudak hareketleri ile ses arasındaki **zamansal uyumsuzluklar**, deepfake videolarda belirginleşir.
+### 👄 Ağız Kareleri (BN vs DF)
+Gerçek ve deepfake videolardan çıkarılan ağız ROI kareleri karşılaştırılır.
 
 | Gerçek (BN) | Deepfake (DF) |
-|-------------|---------------|
+|---|---|
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agız_kareleri_bn.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agız_kareleri_df.png) |
 
-*Gerçek videolarda doğal dudak hareketleri, deepfake videolarda ise senkron bozuklukları görülür.*
-
 ---
 
-## 🧠 4) LLM Yorumları (Neden Deepfake?)
+### 🧠 LLM Yorumları
+Sayısal skorlar, LLM tarafından **“neden fake / neden gerçek?”** sorusuna yanıt verecek şekilde metne dönüştürülür.
 
-Modelden elde edilen sayısal skorlar, büyük dil modeli (**LLM**) tarafından yorumlanarak  
-kullanıcıya **“neden deepfake / neden gerçek?”** sorusuna yönelik **metinsel gerekçeler** sunar.
 | Gerçek (BN) | Deepfake (DF) |
-|-------------|---------------|
-| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_gercek_video_yanıtı.png) | ![LLM Yanıtı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yanıtı.jpeg)
+|---|---|
+| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_gercek_video_yanıtı.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yanıtı.jpeg) |
 
-
-
-*LLM tarafından üretilen insan-dostu açıklama.*
-
-![LLM Yönlendirme](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladım.png)
-
-*Hangi analiz çıktılarının LLM’e yönlendirildiğini gösteren akış.*
+![LLM Akış](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladım.png)
 
 ---
 
-## 📄 5) PDF Çıktısı (Otomatik Rapor)
+### 📄 PDF Rapor
+Analiz sonuçları otomatik olarak **PDF raporu**na dönüştürülür.
 
-Tüm analiz sonuçları, görseller ve açıklamalar otomatik olarak  
-**PDF raporu** hâline getirilir ve dışa aktarılır.
-
-![PDF Çıktısı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_cıktısı.png)
-
-*Otomatik oluşturulan, arşivlenebilir analiz raporu.*
+![PDF](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_cıktısı.png)
 
 ---
 
-## 📊 6) Parametre Grafikleri
+### 📊 Parametre Grafikleri
+Skorlar ve eşikler grafiksel olarak sunulur.
 
-Model skorları ve eşik değerleri grafiksel olarak sunularak  
-karar mekanizmasının **şeffaflığı** artırılır.
-
-![Parametre Grafikleri](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/parametre_grafikleri.png)
-
-*Modalite bazlı skor dağılımları ve karar eşikleri.*
+![Grafikler](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/parametre_grafikleri.png)
 
 ---
 
-## 🎥 7) Demo (Uçtan Uca)
-
-Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren demo video:
-
-👉 **[Demo videosunu izlemek için tıklayın](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/assets/demo.mp4)**
+### 🎥 Demo
+👉 **[Demo videosu](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/assets/demo.mp4)**
 
 ---
 
 ## 🧠 Sistem Mimarisi
-
-```text
-Video Input
-   ├── Visual Analysis (CNN + Grad-CAM)
-   ├── Audio Analysis (ASR + Artefact Detection)
-   ├── Lip-Sync Analysis (Mouth / Audio Alignment)
-   └── LLM-based Explanation
-            ↓
-        Fusion Layer
-            ↓
-   Final Deepfake Probability + Explanation
 ```
+Video
+ ├─ Görsel Analiz (CNN + Grad-CAM) → Sv
+ ├─ Ses Analizi (ASR + Artefakt) → Sa
+ ├─ Dudak–Ses Senkronu (AV Alignment) → Sl
+ └─ Karar Füzyonu → Sf
+        ↓
+ Açıklanabilir Skor + Metinsel Gerekçe
+```
+
+**Füzyon:** `Sf = α·Sv + (1−α)·Sl`,  `α ∈ [0.3, 0.7]`
 
 ---
 
 ## 🔍 Modaliteler
-
-### 🎥 Görüntü (Visual)
-- CNN / Xception tabanlı model  
-- Frame-level analiz  
-- Grad-CAM ile açıklanabilirlik  
-
-### 🔊 Ses (Audio)
-- ASR tabanlı çözümleme  
-- GAN artefakt analizi  
-
-### 👄 Dudak–Ses Senkronu
-- Ağız bölgesi tespiti  
-- Audio–visual hizalama  
-
-### 🧠 LLM Yorumlama
-- Skorların metinsel açıklaması  
-- “Neden fake / neden gerçek?” cevabı  
+- **Görüntü:** Xception/CNN, frame-level analiz, Grad-CAM
+- **Ses:** ASR tabanlı çözümleme, artefakt analizi
+- **Dudak–Ses:** Ağız ROI, AV hizalama
+- **LLM:** Skorların metinsel açıklaması
 
 ---
 
 ## 📂 Proje Yapısı
-
-```bash
+```
 deepfake_project/
 ├── src/
 │   ├── app.py
@@ -172,7 +124,6 @@ deepfake_project/
 │   ├── fusion.py
 │   ├── llm_client.py
 │   └── biomech.py
-│
 ├── network/models/
 ├── assets/demo.mp4
 ├── sample_data/
@@ -182,94 +133,85 @@ deepfake_project/
 ├── requirements.txt
 └── README.md
 ```
-## 📂 Veri Seti
-
-Bu projede yeni bir veri seti oluşturulmamıştır.
-Sistem, **gösterim (demo) ve nitel analiz** amacıyla sınırlı sayıda
-gerçek  ve deepfake  video üzerinde çalışacak şekilde tasarlanmıştır.
-
-### Görüntü Modali
-- Görsel analiz için **FaceForensics++** tarafından sağlanan
-  pretrained Xception tabanlı modeller kullanılmıştır.
-- Model ağırlıkları repoda paylaşılmamaktadır.
-
-### Değerlendirme Amaçlı Örnekler
-- Az sayıda gerçek ve deepfake video
-- Amaç: multimodal analiz, açıklanabilirlik (Grad-CAM) ve
-  LLM tabanlı karar yorumlarının gösterimi
-
-### Not
-Bu çalışmanın odağı büyük ölçekli veri seti eğitimi değil;
-**çoklu modalite entegrasyonu, açıklanabilir karar mekanizması
-ve sistem tasarımıdır**.
 
 ---
-## 🧩 Modality–Responsibility Mapping
 
-| Modality | Method | Output |
-|--------|-------|--------|
-| Visual | CNN + Grad-CAM | Frame scores + heatmaps |
-| Audio | ASR + Artefact | Audio authenticity score |
-| Lip-Sync | AV Alignment | Sync consistency score |
-| LLM | Prompted reasoning | Natural language explanation |
+## 📂 Veri Seti
+Bu projede yeni bir veri seti oluşturulmamıştır.
+Sistem, **demo ve nitel analiz** amacıyla sınırlı sayıda gerçek ve deepfake video ile çalışır.
+
+- Görsel model: **FaceForensics++ pretrained** ağırlıkları
+- Modeller yalnızca **inference** amaçlıdır ve repoda paylaşılmaz
+
+---
+
+## 🧩 Modality–Responsibility Mapping
+| Modality | Yöntem | Çıktı |
+|---|---|---|
+| Görüntü | CNN + Grad-CAM | Frame skorları + ısı haritaları |
+| Ses | ASR + Artefakt | Ses özgünlük skoru |
+| Dudak–Ses | AV Alignment | Senkron tutarlılık skoru |
+| LLM | Prompted reasoning | Metinsel açıklama |
+
+---
+
+## ♻️ Reproducibility
+- Python **>= 3.10**
+- Windows / Linux test edildi
+- GPU opsiyonel (CPU destekli)
 
 ---
 
 ## ⚙️ Kurulum
-
 ```bash
-♻️ Reproducibility
-- Python >= 3.10
-- Tested on Windows / Linux
-- GPU optional (CPU supported)
-
+pip install -r requirements.txt
+```
 
 ## ▶️ Çalıştırma
-
 ```bash
 streamlit run src/app.py
 ```
-## 🎯 Applications
-- Digital forensics
-- Media authenticity verification
-- Legal evidence pre-screening
-- Academic multimodal AI research
 
-## 🚀 Future Work
-- Blink & head-pose anomaly detection
-- Temporal transformer-based fusion
-- Benchmarking on DFDC / FaceForensics++
+---
+
+## 🎯 Uygulamalar
+- Dijital adli bilişim
+- Medya doğrulama
+- Hukuki ön inceleme
+- Akademik multimodal AI araştırmaları
+
+## 🚀 Gelecek Çalışmalar
+- Göz kırpma & baş-poz anomali tespiti
+- Zamansal transformer füzyonu
+- DFDC / FaceForensics++ benchmarkları
 
 ---
 
 ## 📊 Çıktılar
+- Final deepfake skoru (0–1)
+- Modalite bazlı skorlar
+- Görsel açıklamalar
+- Metinsel gerekçe
 
-- Final deepfake skoru (0–1)  
-- Modalite bazlı skorlar  
-- Görsel açıklamalar  
-- Metinsel gerekçe  
+---
+
+## ✨ Katkılar
+- Paralel multimodal analiz hattı
+- Grad-CAM ile frame-level açıklanabilirlik
+- Dudak–ses hizalama ile senkron uyumsuzluk tespiti
+- LLM tabanlı semantik açıklama katmanı
+- Otomatik PDF raporlama
 
 ---
 
 ## 👩‍💻 Geliştirici
-
 **Büşra Mina Al**  
 Artificial Intelligence & Industrial Engineering  
 Ostim Teknik Üniversitesi
 
 ---
 
+## 📝 Lisans
+Bu proje **akademik ve araştırma amaçlı** kullanım içindir.
+
 > Trustworthy AI requires explainable decisions.
-
-
-## ✨ Contributions
-- Parallel multimodal analysis pipeline
-- Frame-level visual explainability with Grad-CAM
-- Lip-sync inconsistency detection via mouth-region alignment
-- LLM-based semantic explanation layer
-- Automatic PDF forensic report generation
-
-## 📝 License
-This project is released for academic and research purposes.
-
-
