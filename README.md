@@ -60,6 +60,7 @@ Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
 
 *LLM yönlendirme ve açıklama üretim akışı*
 
+
 ---
 
 ## 📄 5) PDF Çıktısı (Otomatik Rapor)
@@ -70,6 +71,7 @@ Analiz sonuçları otomatik olarak **PDF raporu** şeklinde dışa aktarılır.
 
 *Otomatik oluşturulan analiz raporu (PDF)*
 
+
 ---
 
 ## 📊 6) Parametre Grafikleri
@@ -78,6 +80,7 @@ Skorlar ve eşik değerleri grafiksel olarak sunularak
 model davranışı **şeffaflaştırılır**.
 
 ![Parametre Grafikleri](screenshots/parametre_grafikleri.png)
+
 
 ---
 
