@@ -182,6 +182,28 @@ deepfake_project/
 ├── requirements.txt
 └── README.md
 ```
+## 📂 Veri Seti
+
+Bu projede yeni bir veri seti oluşturulmamıştır.
+Sistem, **gösterim (demo) ve nitel analiz** amacıyla sınırlı sayıda
+gerçek  ve deepfake  video üzerinde çalışacak şekilde tasarlanmıştır.
+
+### Görüntü Modali
+- Görsel analiz için **FaceForensics++** tarafından sağlanan
+  pretrained Xception tabanlı modeller kullanılmıştır.
+- Model ağırlıkları repoda paylaşılmamaktadır.
+
+### Değerlendirme Amaçlı Örnekler
+- Az sayıda gerçek ve deepfake video
+- Amaç: multimodal analiz, açıklanabilirlik (Grad-CAM) ve
+  LLM tabanlı karar yorumlarının gösterimi
+
+### Not
+Bu çalışmanın odağı büyük ölçekli veri seti eğitimi değil;
+**çoklu modalite entegrasyonu, açıklanabilir karar mekanizması
+ve sistem tasarımıdır**.
+
+---
 ## 🧩 Modality–Responsibility Mapping
 
 | Modality | Method | Output |
