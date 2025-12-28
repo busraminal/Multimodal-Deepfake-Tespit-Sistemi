@@ -19,66 +19,87 @@ Amaç yalnızca *“fake mi?”* demek değil;
 
 ## 🖥️ 1) Arayüz (UI)
 
-Sistem, yüklenen video için görsel, işitsel ve senkronizasyon analizlerini **paralel** olarak çalıştırır  
-ve sonuçları **tek bir panelde** sunar.
+Sistem, yüklenen video için **görüntü**, **ses** ve **dudak–ses senkronizasyonu** analizlerini  
+**paralel (eş zamanlı)** olarak çalıştırır ve tüm çıktıları **tek bir panelde** sunar.
 
 ![Arayüz](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/1_arayuz.png)
+
+*Multimodal analiz sonuçlarının, skorların ve açıklamaların tek bir arayüzde sunulması.*
 
 ---
 
 ## 🔍 2) Explainability — Grad-CAM
 
 CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri  
-**Grad-CAM** ile görselleştirilmiştir.
+**Grad-CAM** yöntemi ile görselleştirilmiştir.  
+Isı haritaları, modelin deepfake kararını verirken hangi bölgeleri **ayırt edici** bulduğunu gösterir.
 
 | Deepfake Örneği | Gerçek (BN) |
 |-----------------|-------------|
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam_bn.jpg) |
 
-*Sol: Deepfake — Sağ: Gerçek (BN)*
+*Sol: Deepfake videoda anormal odaklanmalar — Sağ: Gerçek videoda daha dengeli aktivasyonlar.*
 
 ---
 
 ## 👄 3) Ağız Kareleri (BN vs DF)
 
-Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri.
+Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri gösterilmektedir.  
+Dudak hareketleri ile ses arasındaki **zamansal uyumsuzluklar**, deepfake videolarda belirginleşir.
 
 | Gerçek (BN) | Deepfake (DF) |
 |-------------|---------------|
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agiz_kareleri_bn.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agiz_kareleri_df.png) |
 
+*Gerçek videolarda doğal dudak hareketleri, deepfake videolarda ise senkron bozuklukları görülür.*
+
 ---
 
 ## 🧠 4) LLM Yorumları (Neden Deepfake?)
 
+Modelden elde edilen sayısal skorlar, büyük dil modeli (**LLM**) tarafından yorumlanarak  
+kullanıcıya **“neden deepfake / neden gerçek?”** sorusuna yönelik **metinsel gerekçeler** sunar.
+
 ![LLM Yanıtı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yaniti.jpeg)
+
+*LLM tarafından üretilen insan-dostu açıklama.*
 
 ![LLM Yönlendirme](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladim.png)
 
-*LLM yönlendirme ve açıklama üretim akışı*
+*Hangi analiz çıktılarının LLM’e yönlendirildiğini gösteren akış.*
 
 ---
 
 ## 📄 5) PDF Çıktısı (Otomatik Rapor)
 
+Tüm analiz sonuçları, görseller ve açıklamalar otomatik olarak  
+**PDF raporu** hâline getirilir ve dışa aktarılır.
+
 ![PDF Çıktısı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_ciktisi.png)
 
-*Otomatik oluşturulan analiz raporu (PDF)*
+*Otomatik oluşturulan, arşivlenebilir analiz raporu.*
 
 ---
 
 ## 📊 6) Parametre Grafikleri
 
+Model skorları ve eşik değerleri grafiksel olarak sunularak  
+karar mekanizmasının **şeffaflığı** artırılır.
+
 ![Parametre Grafikleri](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/parametre_grafikleri.png)
+
+*Modalite bazlı skor dağılımları ve karar eşikleri.*
 
 ---
 
 ## 🎥 7) Demo (Uçtan Uca)
 
+Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren demo video:
+
 👉 **[Demo videosunu izlemek için tıklayın](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/assets/demo.mp4)**
 
-
 ---
+
 ## 🧠 Sistem Mimarisi
 
 ```text
