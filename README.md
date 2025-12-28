@@ -22,7 +22,7 @@ Amaç yalnızca *“fake mi?”* demek değil;
 Sistem, yüklenen video için **görüntü**, **ses** ve **dudak–ses senkronizasyonu** analizlerini  
 **paralel (eş zamanlı)** olarak çalıştırır ve tüm çıktıları **tek bir panelde** sunar.
 
-![Arayüz](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/1_arayuz.png)
+![Arayüz](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/1_arayüz.png)
 
 *Multimodal analiz sonuçlarının, skorların ve açıklamaların tek bir arayüzde sunulması.*
 
@@ -49,7 +49,7 @@ Dudak hareketleri ile ses arasındaki **zamansal uyumsuzluklar**, deepfake video
 
 | Gerçek (BN) | Deepfake (DF) |
 |-------------|---------------|
-| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agiz_kareleri_bn.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agiz_kareleri_df.png) |
+| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agız_kareleri_bn.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agız_kareleri_df.png) |
 
 *Gerçek videolarda doğal dudak hareketleri, deepfake videolarda ise senkron bozuklukları görülür.*
 
@@ -60,11 +60,11 @@ Dudak hareketleri ile ses arasındaki **zamansal uyumsuzluklar**, deepfake video
 Modelden elde edilen sayısal skorlar, büyük dil modeli (**LLM**) tarafından yorumlanarak  
 kullanıcıya **“neden deepfake / neden gerçek?”** sorusuna yönelik **metinsel gerekçeler** sunar.
 
-![LLM Yanıtı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yaniti.jpeg)
+![LLM Yanıtı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yanıtı.jpeg)
 
 *LLM tarafından üretilen insan-dostu açıklama.*
 
-![LLM Yönlendirme](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladim.png)
+![LLM Yönlendirme](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladım.png)
 
 *Hangi analiz çıktılarının LLM’e yönlendirildiğini gösteren akış.*
 
@@ -75,7 +75,7 @@ kullanıcıya **“neden deepfake / neden gerçek?”** sorusuna yönelik **meti
 Tüm analiz sonuçları, görseller ve açıklamalar otomatik olarak  
 **PDF raporu** hâline getirilir ve dışa aktarılır.
 
-![PDF Çıktısı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_ciktisi.png)
+![PDF Çıktısı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_cıktısı.png)
 
 *Otomatik oluşturulan, arşivlenebilir analiz raporu.*
 
