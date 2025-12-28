@@ -1,0 +1,47 @@
+[
+  {
+    "id": "visual_artifact_high",
+    "category": "Sv",
+    "text": "Yüksek görsel tutarsızlık skorları, yüz sınırlarında bulanıklık, doku süreksizliği ve ışık-gölge uyumsuzluğu ile ilişkilidir. Bu tür artefaktlar genellikle yüz değiştirme veya yeniden sentezleme tabanlı deepfake modellerinde görülür."
+  },
+  {
+    "id": "visual_artifact_low",
+    "category": "Sv",
+    "text": "Düşük görsel tutarsızlık, yüz dokusunun doğal ve zamansal olarak kararlı olduğunu gösterir. Bu durum, videonun gerçek olma ihtimalini artırır ancak tek başına kesin kanıt değildir."
+  },
+  {
+    "id": "lip_sync_mismatch",
+    "category": "Sl",
+    "text": "Ses ve dudak hareketleri arasındaki zamansal uyumsuzluk, deepfake videolarda sık görülen bir bulgudur. Özellikle 60–100 ms üzerindeki gecikmeler, yapay konuşma senkronizasyonuna işaret edebilir."
+  },
+  {
+    "id": "lip_sync_not_applicable",
+    "category": "Sl",
+    "text": "Sessiz veya az konuşmalı videolarda lip-sync analizi güvenilir değildir. Bu durumda dudak-ses uyumsuzluğu skorları değerlendirme dışı bırakılmalıdır."
+  },
+  {
+    "id": "blink_anomaly",
+    "category": "Sb",
+    "text": "Anormal göz kırpma sıklığı veya düzensiz göz kapama süreleri, erken dönem deepfake modellerinde yaygın olarak gözlemlenen biyomekanik tutarsızlıklardandır."
+  },
+  {
+    "id": "head_pose_anomaly",
+    "category": "Sh",
+    "text": "Baş pozisyonu ve yüz yönelimi arasındaki tutarsızlıklar, yüz yeniden projeksiyonu hatalarına işaret edebilir. Bu durum özellikle düşük kaliteli veya hızlı üretilmiş deepfake videolarda görülür."
+  },
+  {
+    "id": "audio_gan_artifact",
+    "category": "Sa",
+    "text": "GAN tabanlı ses üretiminde, yüksek frekans bölgelerinde metalik veya boğuk artefaktlar oluşabilir. Bu tür ses bozulmaları yapay ses üretiminin güçlü bir göstergesidir."
+  },
+  {
+    "id": "silent_video_case",
+    "category": "context",
+    "text": "Sessiz videolarda deepfake tespiti ağırlıklı olarak görsel ve biyomekanik ipuçlarına dayanır. Ses ve lip-sync skorları bu senaryoda ikincil öneme sahiptir."
+  },
+  {
+    "id": "fusion_reasoning",
+    "category": "fusion",
+    "text": "Multimodal deepfake tespitinde nihai karar, tek bir modalite yerine görsel, biyomekanik ve ses skorlarının bağlamsal olarak birleştirilmesiyle verilmelidir."
+  }
+]
