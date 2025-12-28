@@ -8,30 +8,55 @@ Amaç yalnızca *“fake mi?”* demek değil,
 **“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
 
 ---
-## 📸 Screenshots & Outputs
+> 📌 Bu bölümde sunulan tüm görseller, geliştirilen multimodal deepfake tespit sisteminin **gerçek zamanlı çalışması sırasında elde edilen çıktılardır**.
+
+---
 
 ### 🖥️ Arayüz
+Sistem arayüzü; yüklenen video için görsel, işitsel ve senkronizasyon analizlerini paralel olarak çalıştırır ve sonuçları tek bir panelde sunar.
+
 ![UI](screenshots/1_arayuz.png)
 
+---
+
 ### 👄 Ağız Kareleri (BN vs DF)
-![BN](screenshots/agiz_kareleri_bn.png)
-![DF](screenshots/agiz_kareleri_df.png)
+Gerçek (BN) ve deepfake (DF) videolardan çıkarılan ağız bölgesi kareleri.  
+Bu karşılaştırma, dudak hareketlerindeki tutarsızlıkların görsel olarak incelenmesini sağlar.
+
+<img src="screenshots/agiz_kareleri_bn.png" width="280"/>
+<img src="screenshots/agiz_kareleri_df.png" width="280"/>
+
+---
 
 ### 🔍 Explainability (Grad-CAM)
-![GradCAM](screenshots/grandcam.png)
-![GradCAM-BN](screenshots/grandcam_bn.jpg)
+CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri Grad-CAM ile görselleştirilmiştir.  
+Isı haritaları, modelin şüpheli bölgeleri nasıl tespit ettiğini açıklamaya yardımcı olur.
+
+<img src="screenshots/grandcam.png" width="280"/>
+<img src="screenshots/grandcam_bn.jpg" width="280"/>
+
+---
 
 ### 🧠 LLM Yorumları
+Model çıktıları, büyük dil modeli (LLM) tarafından yorumlanarak **“neden deepfake?”** sorusuna insan-dostu açıklamalar üretir.  
+Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği de gösterilmektedir.
+
 ![LLM](screenshots/df_llm_yaniti.jpeg)
 ![Routing](screenshots/hangi_dosyada_llm_bagladim.png)
 
+---
+
 ### 📊 Parametre Grafikleri
+Analiz sürecinde elde edilen skorlar ve eşik değerleri grafiksel olarak sunularak model davranışı daha şeffaf hale getirilmiştir.
+
 ![Params](screenshots/parametre_grafikleri.png)
 
-### 🎥 Demo
-[Demo videosu](screenshots/demo_videosu.mp4)
+---
 
-> 📌 Yukarıdaki görseller **gerçek çalışma çıktılarıdır**.
+### 🎥 Demo
+Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo videosu.  
+[Demo videosunu izlemek için tıklayın](screenshots/demo_videosu.mp4)
+
 
 ---
 ## 🧠 Sistem Mimarisi
