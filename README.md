@@ -40,8 +40,8 @@ Isı haritaları, modelin deepfake kararını verirken hangi bölgeleri **ayırt
 
 *Sol: Deepfake videoda anormal odaklanmalar — Sağ: Gerçek videoda daha dengeli aktivasyonlar.*
 
-*Çıktı arayüz yorumu: Neden, hangi parametre yüzünden sorularına cevap 
- | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png) |
+Çıktı arayüz yorumu: Neden, hangi parametre yüzünden sorularına cevap 
+| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png) |
 ---
 
 ## 👄 3) Ağız Kareleri (BN vs DF)
