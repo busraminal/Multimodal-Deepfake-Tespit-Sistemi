@@ -40,6 +40,8 @@ Isı haritaları, modelin deepfake kararını verirken hangi bölgeleri **ayırt
 
 *Sol: Deepfake videoda anormal odaklanmalar — Sağ: Gerçek videoda daha dengeli aktivasyonlar.*
 
+*Çıktı arayüz yorumu: Neden, hangi parametre yüzünden sorularına cevap 
+ | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png) |
 ---
 
 ## 👄 3) Ağız Kareleri (BN vs DF)
@@ -59,8 +61,11 @@ Dudak hareketleri ile ses arasındaki **zamansal uyumsuzluklar**, deepfake video
 
 Modelden elde edilen sayısal skorlar, büyük dil modeli (**LLM**) tarafından yorumlanarak  
 kullanıcıya **“neden deepfake / neden gerçek?”** sorusuna yönelik **metinsel gerekçeler** sunar.
+| Gerçek (BN) | Deepfake (DF) |
+|-------------|---------------|
+| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_gercek_video_yanıtı.png) | ![LLM Yanıtı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yanıtı.jpeg)
 
-![LLM Yanıtı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yanıtı.jpeg)
+
 
 *LLM tarafından üretilen insan-dostu açıklama.*
 
