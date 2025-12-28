@@ -2,15 +2,18 @@
 # 🎭 Multimodal Deepfake Detection System  
 **Vision • Audio • Lip-Sync • Explainability • LLM Support**
 
-Bu proje, **deepfake videolarını çoklu modalite (görüntü + ses + dudak-ses senkronu)** üzerinden analiz eden, **açıklanabilir (XAI)** ve **uçtan uca çalışan** bir yapay zeka sistemidir.
+Bu proje, **deepfake videolarını çoklu modalite (görüntü + ses + dudak–ses senkronu)** üzerinden analiz eden,  
+**açıklanabilir (XAI)** ve **uçtan uca çalışan** bir yapay zeka sistemidir.
 
-Amaç yalnızca *“fake mi?”* demek değil,  
+Amaç yalnızca *“fake mi?”* demek değil;  
 **“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
 
 ---
+
 ## 🎯 Multimodal Deepfake Tespit Sistemi — Vitrin
 
-> 📌 Aşağıda sunulan tüm görseller ve çıktılar, geliştirilen multimodal deepfake tespit sisteminin **gerçek zamanlı çalışması sırasında elde edilen çıktılardır**.
+> 📌 Aşağıda sunulan tüm görseller ve çıktılar, geliştirilen sistemin  
+> **gerçek zamanlı çalışması sırasında elde edilen çıktılardır**.
 
 ---
 
@@ -40,7 +43,7 @@ Isı haritaları, modelin hangi bölgeleri **şüpheli** bulduğunu açıklar.
 ## 👄 3) Ağız Kareleri (BN vs DF)
 
 Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri.  
-Dudak senkronizasyonundaki tutarsızlıklar **görsel olarak karşılaştırılır**.
+Dudak–ses senkronizasyonundaki tutarsızlıklar **görsel olarak karşılaştırılır**.
 
 | Gerçek (BN) | Deepfake (DF) |
 |-------------|---------------|
@@ -60,7 +63,6 @@ Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
 
 *LLM yönlendirme ve açıklama üretim akışı*
 
-
 ---
 
 ## 📄 5) PDF Çıktısı (Otomatik Rapor)
@@ -71,7 +73,6 @@ Analiz sonuçları otomatik olarak **PDF raporu** şeklinde dışa aktarılır.
 
 *Otomatik oluşturulan analiz raporu (PDF)*
 
-
 ---
 
 ## 📊 6) Parametre Grafikleri
@@ -81,16 +82,13 @@ model davranışı **şeffaflaştırılır**.
 
 ![Parametre Grafikleri](screenshots/parametre_grafikleri.png)
 
-
 ---
 
 ## 🎥 7) Demo (Uçtan Uca)
 
 Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo:
 
-👉 **[Demo videosunu izlemek için tıklayın](screenshots/demo_videosu.mp4)**
-
-
+👉 **[Demo videosunu izlemek için tıklayın](assets/demo.mp4)**
 
 ---
 ## 🧠 Sistem Mimarisi
@@ -196,6 +194,4 @@ Ostim Teknik Üniversitesi
 
 
 
-
-https://github.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/raw/main/assets/demo.mp4
 
