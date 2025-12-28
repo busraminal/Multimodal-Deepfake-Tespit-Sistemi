@@ -22,19 +22,18 @@ Amaç yalnızca *“fake mi?”* demek değil;
 Sistem, yüklenen video için görsel, işitsel ve senkronizasyon analizlerini **paralel** olarak çalıştırır  
 ve sonuçları **tek bir panelde** sunar.
 
-![Arayüz](screenshots/1_arayuz.png)
+![Arayüz](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/1_arayuz.png)
 
 ---
 
 ## 🔍 2) Explainability — Grad-CAM
 
 CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri  
-**Grad-CAM** ile görselleştirilmiştir.  
-Isı haritaları, modelin hangi bölgeleri **şüpheli** bulduğunu açıklar.
+**Grad-CAM** ile görselleştirilmiştir.
 
 | Deepfake Örneği | Gerçek (BN) |
 |-----------------|-------------|
-| ![](screenshots/grandcam.png) | ![](screenshots/grandcam_bn.jpg) |
+| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam_bn.jpg) |
 
 *Sol: Deepfake — Sağ: Gerçek (BN)*
 
@@ -42,24 +41,19 @@ Isı haritaları, modelin hangi bölgeleri **şüpheli** bulduğunu açıklar.
 
 ## 👄 3) Ağız Kareleri (BN vs DF)
 
-Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri.  
-Dudak–ses senkronizasyonundaki tutarsızlıklar **görsel olarak karşılaştırılır**.
+Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri.
 
 | Gerçek (BN) | Deepfake (DF) |
 |-------------|---------------|
-| ![](screenshots/agiz_kareleri_bn.png) | ![](screenshots/agiz_kareleri_df.png) |
+| ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agiz_kareleri_bn.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agiz_kareleri_df.png) |
 
 ---
 
 ## 🧠 4) LLM Yorumları (Neden Deepfake?)
 
-Model çıktıları, büyük dil modeli (**LLM**) tarafından yorumlanarak  
-**“neden deepfake?”** sorusuna insan-dostu açıklamalar üretir.  
-Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
+![LLM Yanıtı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yaniti.jpeg)
 
-![LLM Yanıtı](screenshots/df_llm_yaniti.jpeg)
-
-![LLM Yönlendirme](screenshots/hangi_dosyada_llm_bagladim.png)
+![LLM Yönlendirme](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladim.png)
 
 *LLM yönlendirme ve açıklama üretim akışı*
 
@@ -67,9 +61,7 @@ Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
 
 ## 📄 5) PDF Çıktısı (Otomatik Rapor)
 
-Analiz sonuçları otomatik olarak **PDF raporu** şeklinde dışa aktarılır.
-
-![PDF Çıktısı](screenshots/pdf_ciktisi.png)
+![PDF Çıktısı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_ciktisi.png)
 
 *Otomatik oluşturulan analiz raporu (PDF)*
 
@@ -77,18 +69,14 @@ Analiz sonuçları otomatik olarak **PDF raporu** şeklinde dışa aktarılır.
 
 ## 📊 6) Parametre Grafikleri
 
-Skorlar ve eşik değerleri grafiksel olarak sunularak  
-model davranışı **şeffaflaştırılır**.
-
-![Parametre Grafikleri](screenshots/parametre_grafikleri.png)
+![Parametre Grafikleri](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/parametre_grafikleri.png)
 
 ---
 
 ## 🎥 7) Demo (Uçtan Uca)
 
-Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo:
+👉 **[Demo videosunu izlemek için tıklayın](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/assets/demo.mp4)**
 
-👉 **[Demo videosunu izlemek için tıklayın](assets/demo.mp4)**
 
 ---
 ## 🧠 Sistem Mimarisi
