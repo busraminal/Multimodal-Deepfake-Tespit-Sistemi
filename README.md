@@ -14,7 +14,6 @@ Amaç yalnızca *“fake mi?”* demek değil,
 
 ---
 
-
 ## 🖥️ 1) Arayüz (UI)
 
 Sistem, yüklenen video için görsel, işitsel ve senkronizasyon analizlerini **paralel** olarak çalıştırır  
@@ -57,7 +56,7 @@ Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
 
 ![LLM Yanıtı](screenshots/df_llm_yaniti.jpeg)
 
-![LLM Routing](screenshots/hangi_dosyada_llm_bagladim.png)
+![LLM Yönlendirme](screenshots/hangi_dosyada_llm_bagladim.png)
 
 *LLM yönlendirme ve açıklama üretim akışı*
 
@@ -87,6 +86,7 @@ model davranışı **şeffaflaştırılır**.
 Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo:
 
 👉 **[Demo videosunu izlemek için tıklayın](screenshots/demo_videosu.mp4)**
+
 
 
 ---
