@@ -8,7 +8,24 @@ Amaç yalnızca *“fake mi?”* demek değil,
 **“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
 
 ---
+## 🎬 Demo & Çıktılar
 
+▶️ Full video:  
+### 📺 Arayüz – Video Analizi
+![UI Demo](assets/screenshots/ui_demo.png)
+
+### 📊 Skor Görselleştirme (Gauge / Probability)
+![Score Gauge](assets/screenshots/score_gauge.png)
+
+### 🧠 Açıklanabilirlik (Grad-CAM)
+![GradCAM](assets/screenshots/gradcam.png)
+
+### 👄 Lip-Sync Analizi
+![Lip Sync](assets/screenshots/lip_sync.png)
+
+> 📌 Yukarıdaki görseller **gerçek çalışma çıktılarıdır**.
+
+---
 ## 🧠 Sistem Mimarisi
 
 ```text
@@ -112,10 +129,6 @@ Ostim Teknik Üniversitesi
 
 
 
-## 🎥 Demo Video
 
-![Demo](assets/demo.gif)
-
-▶️ Full video:  
 https://github.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/raw/main/assets/demo.mp4
 
