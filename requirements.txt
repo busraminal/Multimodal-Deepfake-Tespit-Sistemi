@@ -1,0 +1,7 @@
+torch
+torchaudio
+opencv-python
+ffmpeg-python
+sentence-transformers
+openai-whisper
+numpy
