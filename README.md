@@ -17,9 +17,7 @@ Amaç yalnızca *“fake mi?”* demek değil,
 ## 🖥️ 1) Arayüz (UI)
 Sistem, yüklenen video için görsel, işitsel ve senkronizasyon analizlerini paralel olarak çalıştırır ve sonuçları tek bir panelde sunar.
 
-<p align="center">
-  <img src="screenshots/1_arayuz.png" width="720"/>
-</p>
+<p align="center"> <img src="screenshots/1_arayuz.png" width="720"/> </p>
 
 ---
 
@@ -32,47 +30,32 @@ Isı haritaları, modelin şüpheli bölgeleri nasıl tespit ettiğini açıklar
   <img src="screenshots/grandcam_bn.jpg" width="260"/>
 </p>
 <p align="center">
-  <em>Sol: Deepfake örneği — Sağ: Gerçek (BN)</em>
+  <em>Sol: Deepfake örneği — Sağ: Gerçek (BEN)</em>
 </p>
 
 ---
 
 ## 👄 3) Ağız Kareleri (BN vs DF)
-Gerçek (BN) ve deepfake (DF) videolardan çıkarılan ağız bölgesi kareleri.  
+Gerçek (BN) ve deepfake (DF) videolardan çıkarılan ağız bölgesi kareleri.
 Dudak senkronizasyonundaki tutarsızlıklar görsel olarak karşılaştırılır.
 
-<p align="center">
-  <img src="screenshots/agiz_kareleri_bn.png" width="260"/>
-  <img src="screenshots/agiz_kareleri_df.png" width="260"/>
-</p>
-<p align="center">
-  <em>Sol: Gerçek (BN) — Sağ: Deepfake (DF)</em>
-</p>
+<p align="center"> <img src="screenshots/agiz_kareleri_bn.png" width="260"/> <img src="screenshots/agiz_kareleri_df.png" width="260"/> </p> <p align="center"> <em>Sol: Gerçek (BN) — Sağ: Deepfake (DF)</em> </p>
 
 ---
 
 ## 🧠 4) LLM Yorumları (Neden Deepfake?)
-Model çıktıları, büyük dil modeli (LLM) tarafından yorumlanarak **“neden deepfake?”** sorusuna insan-dostu açıklamalar üretir.  
+Model çıktıları, büyük dil modeli (LLM) tarafından yorumlanarak
+“neden deepfake?” sorusuna insan-dostu açıklamalar üretir.
 Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
 
-<p align="center">
-  <img src="screenshots/df_llm_yaniti.jpeg" width="420"/>
-</p>
-<p align="center">
-  <img src="screenshots/hangi_dosyada_llm_bagladim.png" width="420"/>
-</p>
+<p align="center"> <img src="screenshots/df_llm_yaniti.jpeg" width="420"/> </p> <p align="center"> <img src="screenshots/hangi_dosyada_llm_bagladim.png" width="420"/> </p> <p align="center"> <em>LLM yönlendirme ve açıklama üretim akışı</em> </p>
 
 ---
 
 ## 📄 5) PDF Çıktısı (Otomatik Rapor)
 Analiz sonuçları otomatik olarak PDF raporu şeklinde dışa aktarılır.
 
-<p align="center">
-  <img src="screenshots/pdf_ciktisi.png" width="520"/>
-</p>
-<p align="center">
-  <em>Otomatik oluşturulan analiz raporu (PDF)</em>
-</p>
+<p align="center"> <img src="screenshots/pdf_ciktisi.png" width="520"/> </p> <p align="center"> <em>Otomatik oluşturulan analiz raporu (PDF)</em> </p>
 
 ---
 
