@@ -14,95 +14,80 @@ Amaç yalnızca *“fake mi?”* demek değil,
 
 ---
 
----
 
-### 🖥️ 1) Arayüz (UI)
-Sistem, yüklenen video için görsel, işitsel ve senkronizasyon analizlerini paralel olarak çalıştırır ve sonuçları tek bir panelde sunar.
+## 🖥️ 1) Arayüz (UI)
 
-<p align="center">
-  <img src="./screenshots/1_arayuz.png" width="720" />
-</p>
+Sistem, yüklenen video için görsel, işitsel ve senkronizasyon analizlerini **paralel** olarak çalıştırır  
+ve sonuçları **tek bir panelde** sunar.
 
----
-
+![Arayüz](screenshots/1_arayuz.png)
 
 ---
 
 ## 🔍 2) Explainability — Grad-CAM
-CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri Grad-CAM ile görselleştirilir.  
-Isı haritaları, modelin şüpheli bölgeleri nasıl tespit ettiğini açıklar.
 
-<p align="center">
-  <img src="screenshots/grandcam.png" width="260"/>
-  <img src="screenshots/grandcam_bn.jpg" width="260"/>
-</p>
-<p align="center">
-  <em>Sol: Deepfake örneği — Sağ: Gerçek (BEN)</em>
-</p>
+CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri  
+**Grad-CAM** ile görselleştirilmiştir.  
+Isı haritaları, modelin hangi bölgeleri **şüpheli** bulduğunu açıklar.
+
+| Deepfake Örneği | Gerçek (BN) |
+|-----------------|-------------|
+| ![](screenshots/grandcam.png) | ![](screenshots/grandcam_bn.jpg) |
+
+*Sol: Deepfake — Sağ: Gerçek (BN)*
 
 ---
 
-### 👄 3) Ağız Kareleri (BN vs DF)
+## 👄 3) Ağız Kareleri (BN vs DF)
+
 Gerçek (**BN**) ve deepfake (**DF**) videolardan çıkarılan ağız bölgesi kareleri.  
-Dudak senkronizasyonundaki tutarsızlıklar görsel olarak karşılaştırılır.
+Dudak senkronizasyonundaki tutarsızlıklar **görsel olarak karşılaştırılır**.
 
-<p align="center">
-  <img src="./screenshots/agiz_kareleri_bn.png" width="260" />
-  <img src="./screenshots/agiz_kareleri_df.png" width="260" />
-</p>
-
-<p align="center">
-  <em>Sol: Gerçek (BN) — Sağ: Deepfake (DF)</em>
-</p>
+| Gerçek (BN) | Deepfake (DF) |
+|-------------|---------------|
+| ![](screenshots/agiz_kareleri_bn.png) | ![](screenshots/agiz_kareleri_df.png) |
 
 ---
 
-### 🧠 4) LLM Yorumları (Neden Deepfake?)
-Model çıktıları, büyük dil modeli (LLM) tarafından yorumlanarak  
-<strong>“neden deepfake?”</strong> sorusuna insan-dostu açıklamalar üretir.  
+## 🧠 4) LLM Yorumları (Neden Deepfake?)
+
+Model çıktıları, büyük dil modeli (**LLM**) tarafından yorumlanarak  
+**“neden deepfake?”** sorusuna insan-dostu açıklamalar üretir.  
 Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
 
-<p align="center">
-  <img src="./screenshots/df_llm_yaniti.jpeg" width="420" />
-</p>
+![LLM Yanıtı](screenshots/df_llm_yaniti.jpeg)
 
-<p align="center">
-  <img src="./screenshots/hangi_dosyada_llm_bagladim.png" width="420" />
-</p>
+![LLM Routing](screenshots/hangi_dosyada_llm_bagladim.png)
 
-<p align="center">
-  <em>LLM yönlendirme ve açıklama üretim akışı</em>
-</p>
+*LLM yönlendirme ve açıklama üretim akışı*
 
 ---
 
-### 📄 5) PDF Çıktısı (Otomatik Rapor)
-Analiz sonuçları otomatik olarak PDF raporu şeklinde dışa aktarılır.
+## 📄 5) PDF Çıktısı (Otomatik Rapor)
 
-<p align="center">
-  <img src="./screenshots/pdf_ciktisi.png" width="520" />
-</p>
+Analiz sonuçları otomatik olarak **PDF raporu** şeklinde dışa aktarılır.
 
-<p align="center">
-  <em>Otomatik oluşturulan analiz raporu (PDF)</em>
-</p>
+![PDF Çıktısı](screenshots/pdf_ciktisi.png)
+
+*Otomatik oluşturulan analiz raporu (PDF)*
 
 ---
 
-### 📊 6) Parametre Grafikleri
-Skorlar ve eşik değerleri grafiksel olarak sunularak model davranışı şeffaflaştırılır.
+## 📊 6) Parametre Grafikleri
 
-<p align="center">
-  <img src="./screenshots/parametre_grafikleri.png" width="520" />
-</p>
+Skorlar ve eşik değerleri grafiksel olarak sunularak  
+model davranışı **şeffaflaştırılır**.
+
+![Parametre Grafikleri](screenshots/parametre_grafikleri.png)
 
 ---
-
 
 ## 🎥 7) Demo (Uçtan Uca)
-Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo.
 
-👉 [Demo videosunu izlemek için tıklayın](screenshots/demo_videosu.mp4)
+Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo:
+
+👉 **[Demo videosunu izlemek için tıklayın](screenshots/demo_videosu.mp4)**
+
 
 ---
 ## 🧠 Sistem Mimarisi
