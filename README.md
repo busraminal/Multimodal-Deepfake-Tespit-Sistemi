@@ -8,55 +8,87 @@ Amaç yalnızca *“fake mi?”* demek değil,
 **“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
 
 ---
-> 📌 Bu bölümde sunulan tüm görseller, geliştirilen multimodal deepfake tespit sisteminin **gerçek zamanlı çalışması sırasında elde edilen çıktılardır**.
+## 🎯 Multimodal Deepfake Tespit Sistemi — Vitrin
+
+> 📌 Aşağıda sunulan tüm görseller ve çıktılar, geliştirilen multimodal deepfake tespit sisteminin **gerçek zamanlı çalışması sırasında elde edilen çıktılardır**.
 
 ---
 
-### 🖥️ Arayüz
-Sistem arayüzü; yüklenen video için görsel, işitsel ve senkronizasyon analizlerini paralel olarak çalıştırır ve sonuçları tek bir panelde sunar.
+## 🖥️ 1) Arayüz (UI)
+Sistem, yüklenen video için görsel, işitsel ve senkronizasyon analizlerini paralel olarak çalıştırır ve sonuçları tek bir panelde sunar.
 
-![UI](screenshots/1_arayuz.png)
+<p align="center">
+  <img src="screenshots/1_arayuz.png" width="720"/>
+</p>
 
 ---
 
-### 👄 Ağız Kareleri (BN vs DF)
+## 🔍 2) Explainability — Grad-CAM
+CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri Grad-CAM ile görselleştirilir.  
+Isı haritaları, modelin şüpheli bölgeleri nasıl tespit ettiğini açıklar.
+
+<p align="center">
+  <img src="screenshots/grandcam.png" width="260"/>
+  <img src="screenshots/grandcam_bn.jpg" width="260"/>
+</p>
+<p align="center">
+  <em>Sol: Deepfake örneği — Sağ: Gerçek (BN)</em>
+</p>
+
+---
+
+## 👄 3) Ağız Kareleri (BN vs DF)
 Gerçek (BN) ve deepfake (DF) videolardan çıkarılan ağız bölgesi kareleri.  
-Bu karşılaştırma, dudak hareketlerindeki tutarsızlıkların görsel olarak incelenmesini sağlar.
+Dudak senkronizasyonundaki tutarsızlıklar görsel olarak karşılaştırılır.
 
-<img src="screenshots/agiz_kareleri_bn.png" width="280"/>
-<img src="screenshots/agiz_kareleri_df.png" width="280"/>
-
----
-
-### 🔍 Explainability (Grad-CAM)
-CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri Grad-CAM ile görselleştirilmiştir.  
-Isı haritaları, modelin şüpheli bölgeleri nasıl tespit ettiğini açıklamaya yardımcı olur.
-
-<img src="screenshots/grandcam.png" width="280"/>
-<img src="screenshots/grandcam_bn.jpg" width="280"/>
+<p align="center">
+  <img src="screenshots/agiz_kareleri_bn.png" width="260"/>
+  <img src="screenshots/agiz_kareleri_df.png" width="260"/>
+</p>
+<p align="center">
+  <em>Sol: Gerçek (BN) — Sağ: Deepfake (DF)</em>
+</p>
 
 ---
 
-### 🧠 LLM Yorumları
+## 🧠 4) LLM Yorumları (Neden Deepfake?)
 Model çıktıları, büyük dil modeli (LLM) tarafından yorumlanarak **“neden deepfake?”** sorusuna insan-dostu açıklamalar üretir.  
-Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği de gösterilmektedir.
+Ayrıca hangi analiz çıktısının LLM’e yönlendirildiği gösterilir.
 
-![LLM](screenshots/df_llm_yaniti.jpeg)
-![Routing](screenshots/hangi_dosyada_llm_bagladim.png)
-
----
-
-### 📊 Parametre Grafikleri
-Analiz sürecinde elde edilen skorlar ve eşik değerleri grafiksel olarak sunularak model davranışı daha şeffaf hale getirilmiştir.
-
-![Params](screenshots/parametre_grafikleri.png)
+<p align="center">
+  <img src="screenshots/df_llm_yaniti.jpeg" width="420"/>
+</p>
+<p align="center">
+  <img src="screenshots/hangi_dosyada_llm_bagladim.png" width="420"/>
+</p>
 
 ---
 
-### 🎥 Demo
-Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo videosu.  
-[Demo videosunu izlemek için tıklayın](screenshots/demo_videosu.mp4)
+## 📄 5) PDF Çıktısı (Otomatik Rapor)
+Analiz sonuçları otomatik olarak PDF raporu şeklinde dışa aktarılır.
 
+<p align="center">
+  <img src="screenshots/pdf_ciktisi.png" width="520"/>
+</p>
+<p align="center">
+  <em>Otomatik oluşturulan analiz raporu (PDF)</em>
+</p>
+
+---
+
+## 📊 6) Parametre Grafikleri
+Skorlar ve eşik değerleri grafiksel olarak sunularak model davranışı şeffaflaştırılır.
+
+<p align="center">
+  <img src="screenshots/parametre_grafikleri.png" width="520"/>
+</p>
+
+---
+
+## 🎥 7) Demo (Uçtan Uca)
+Gerçek zamanlı çalışan sistemin uçtan uca kullanımını gösteren örnek demo.
+
+👉 [Demo videosunu izlemek için tıklayın](screenshots/demo_videosu.mp4)
 
 ---
 ## 🧠 Sistem Mimarisi
