@@ -8,6 +8,12 @@ Bu proje, **deepfake videolarını çoklu modalite (görüntü + ses + dudak–s
 Amaç yalnızca *“fake mi?”* demek değil;  
 **“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
 
+## 🔎 Quick Facts
+- **Task:** Multimodal Deepfake Detection
+- **Modalities:** Vision, Audio, Lip-Sync
+- **Explainability:** Grad-CAM + LLM
+- **Output:** Score + Human-readable explanation + PDF report
+- **Status:** Research / Prototype
 ---
 
 ## 🎯 Multimodal Deepfake Tespit Sistemi — Vitrin
@@ -42,6 +48,12 @@ Isı haritaları, modelin deepfake kararını verirken hangi bölgeleri **ayırt
 
 Çıktı arayüz yorumu: Neden, hangi parametre yüzünden sorularına cevap 
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png) |
+
+## ⚠️ Explainability Scope
+- Explanations are **post-hoc**, not causal
+- Grad-CAM highlights discriminative regions, not ground truth
+- LLM explanations are conditioned on model outputs
+
 ---
 
 ## 👄 3) Ağız Kareleri (BN vs DF)
@@ -170,20 +182,41 @@ deepfake_project/
 ├── requirements.txt
 └── README.md
 ```
+## 🧩 Modality–Responsibility Mapping
+
+| Modality | Method | Output |
+|--------|-------|--------|
+| Visual | CNN + Grad-CAM | Frame scores + heatmaps |
+| Audio | ASR + Artefact | Audio authenticity score |
+| Lip-Sync | AV Alignment | Sync consistency score |
+| LLM | Prompted reasoning | Natural language explanation |
 
 ---
 
 ## ⚙️ Kurulum
 
 ```bash
-pip install -r requirements.txt
-```
+♻️ Reproducibility
+- Python >= 3.10
+- Tested on Windows / Linux
+- GPU optional (CPU supported)
+
 
 ## ▶️ Çalıştırma
 
 ```bash
 streamlit run src/app.py
 ```
+## 🎯 Applications
+- Digital forensics
+- Media authenticity verification
+- Legal evidence pre-screening
+- Academic multimodal AI research
+
+## 🚀 Future Work
+- Blink & head-pose anomaly detection
+- Temporal transformer-based fusion
+- Benchmarking on DFDC / FaceForensics++
 
 ---
 
@@ -207,6 +240,14 @@ Ostim Teknik Üniversitesi
 > Trustworthy AI requires explainable decisions.
 
 
+## ✨ Contributions
+- Parallel multimodal analysis pipeline
+- Frame-level visual explainability with Grad-CAM
+- Lip-sync inconsistency detection via mouth-region alignment
+- LLM-based semantic explanation layer
+- Automatic PDF forensic report generation
 
+## 📝 License
+This project is released for academic and research purposes.
 
 
