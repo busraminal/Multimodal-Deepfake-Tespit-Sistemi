@@ -124,8 +124,10 @@ try:
 except Exception:
     pass
 
-# FFmpeg (Windows) — senin path’in
-os.environ["PATH"] = r"C:\ffmpeg\bin;" + os.environ.get("PATH", "")
+# FFmpeg: Windows’ta kuruluysa PATH’e ekle; Linux/Docker’da apt ffmpeg yeterli
+_ffmpeg_bin = r"C:\ffmpeg\bin"
+if os.name == "nt" and os.path.isdir(_ffmpeg_bin):
+    os.environ["PATH"] = _ffmpeg_bin + ";" + os.environ.get("PATH", "")
 
 # =========================================================
 # BACKEND IMPORTLAR (zorunlu)

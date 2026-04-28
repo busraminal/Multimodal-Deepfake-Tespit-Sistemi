@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    image: multimodal-deepfake:latest
+    ports:
+      - "8501:8501"
+    environment:
+      PYTHONUNBUFFERED: "1"
+      FFMPEG_QUIET: "1"
+      # Gorsel model checkpoint (volume veya build icine kopyalanmis dosya)
+      # DF_VISUAL_MODEL_PATH: /app/models/faceforensics/full/full_c23.p
+    # Opsiyonel: agirliklari hosttan bagla (bos klasorde uygulama heuristic moda duser)
+    volumes:
+      - ./models:/app/models:ro
+    restart: unless-stopped

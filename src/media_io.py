@@ -17,9 +17,31 @@ import cv2
 import ffmpeg
 import mediapipe as mp
 import os
+import shutil
 import numpy as np
 
-FFMPEG_PATH = r"C:\ffmpeg\bin\ffmpeg.exe"
+
+def _resolve_ffmpeg_exe() -> str:
+    for key in ("FFMPEG_PATH", "FFMPEG_BIN"):
+        p = (os.environ.get(key) or "").strip().strip('"')
+        if p and os.path.isfile(p):
+            return p
+    win = r"C:\ffmpeg\bin\ffmpeg.exe"
+    if os.path.isfile(win):
+        return win
+    w = shutil.which("ffmpeg")
+    if w:
+        return w
+    try:
+        import imageio_ffmpeg
+
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return "ffmpeg"
+
+
+FFMPEG_PATH = _resolve_ffmpeg_exe()
+FFMPEG_QUIET = os.environ.get("FFMPEG_QUIET", "0").lower() in ("1", "true", "yes")
 
 # MediaPipe yüz mesh modeli
 mp_face = mp.solutions.face_mesh.FaceMesh(
@@ -51,7 +73,7 @@ def extract_audio(video_path, audio_path):
                 ar=16000
             )
             .overwrite_output()
-            .run(cmd=FFMPEG_PATH, quiet=False)   # quiet=True SİLİNDİ
+            .run(cmd=FFMPEG_PATH, quiet=FFMPEG_QUIET)
         )
     except ffmpeg.Error as e:
         print("FFMPEG HATASI:")
@@ -67,7 +89,7 @@ def safe_silent_wav(audio_path):
         wf.setsampwidth(2)
         wf.setframerate(16000)
         wf.writeframes(b'\x00\x00' * 16000)   # 1 saniye sessiz
-    print("[WARN] Video sessizdi → boş WAV oluşturuldu.")
+    print("[WARN] silent video; created empty WAV fallback.")
 
 
 def extract_audio(video_path, audio_path):
@@ -79,7 +101,7 @@ def extract_audio(video_path, audio_path):
             .input(video_path)
             .output(audio_path, acodec="pcm_s16le", ac=1, ar="16000")
             .overwrite_output()
-            .run(cmd=FFMPEG_PATH, quiet=False)
+            .run(cmd=FFMPEG_PATH, quiet=FFMPEG_QUIET)
         )
     except ffmpeg.Error as e:
         print("FFmpeg hata verdi, fallback çalışıyor…")
@@ -134,4 +156,4 @@ def extract_frames(video_path, out_dir):
         frame_idx += 1
 
     cap.release()
-    print("[OK] Ağız frame'leri kaydedildi →", out_dir)
+    print("[OK] mouth frames saved:", out_dir)

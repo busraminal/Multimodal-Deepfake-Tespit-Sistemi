@@ -3,3 +3,13 @@ __pycache__/
 .venv/ 
 venv/ 
 env/ 
+data/feature_cache*.csv
+results/predict_*.json
+models/*.json
+models/*.zip
+models/faceforensics/
+models/faceforensics_unpack/
+train/__pycache__/
+infer/__pycache__/
+eval/__pycache__/
+data_tools/__pycache__/

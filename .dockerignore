@@ -1,0 +1,17 @@
+.venv
+venv
+env
+__pycache__
+*.pyc
+.git
+.gitignore
+terminals
+cloudflared*
+cloudflared-linux*
+**/.pytest_cache
+**/sample_data/*.mp4
+data/tmp_upload.mp4
+data/feature_cache*.csv
+tunnel.log
+server.log
+df_llm.ipynb
