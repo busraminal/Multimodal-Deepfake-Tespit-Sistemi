@@ -177,6 +177,15 @@ AVLips kokunde `0_real/` ve `1_fake/` klasorleri olmali. Ornek yollar:
 
 Veriyi pod’a **volume**, **RunPod dosya yukleme** veya `rsync`/`scp` ile koy; repoda veri yok.
 
+**`FileNotFoundError: Expected ... 0_real`** ise ya veri henüz `/workspace/AVLips` altında degil ya da kok bir kademe ic ice (or. `/workspace/AVLips/AVLips`). `metadata_builder.py` bir alt klasorde `0_real`/`1_fake` arar; yine olmuyorsa podda kok bul:
+
+```bash
+ls -la /workspace
+find /workspace -maxdepth 5 -type d \( -name 0_real -o -name 1_fake \) 2>/dev/null
+```
+
+Cikan yolun **ust** dizinini `export DATASET_ROOT=...` yap (icinde hem `0_real` hem `1_fake` olan klasor).
+
 ### 1) Ortam (tek blok, bash)
 
 Podda `bash` ac; proje ve venv:
