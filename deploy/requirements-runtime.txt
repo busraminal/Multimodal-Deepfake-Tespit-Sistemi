@@ -10,6 +10,7 @@ ffmpeg-python>=0.2.0
 openai-whisper
 sentence-transformers>=2.2.0
 numpy>=1.24.0
+tqdm>=4.66.0
 requests>=2.31.0
 reportlab>=4.0.0
 imageio-ffmpeg>=0.4.9

@@ -97,6 +97,26 @@ python train/train_fusion_from_metadata.py ^
 
 `--max-per-split` sadece train/val/test icin secilen satirlarda ozellik cikarir (tum 7602 videoyu taramaz).
 
+### Terminalde ilerleme (RunPod / SSH)
+
+Script iki faz yazdirir:
+
+- **Faz 1 — Ozellik cache (CSV):** metadata’daki videolar icin satir ozeti (`toplam` / `cache’te hazir` / `islenecek kalan`), ardindan tqdm ile `Ozellik cikarma` cubugu (kalan süre ETA), faz sonunda yazilan/toplam süre özeti.
+- **Faz 2 — Fusion:** tqdm ile epoch cubugu (`val_bce`, `best`).
+
+Ozellikler `feature_cache*.csv` icine yazildikça dosya buyur; yarıda kesilirsen yeniden kosuda sadece **eksik** videolar işlenir (baslik yazilmis bos cache icin `--reset-cache` gerekebilir).
+
+Cubuklar bazen uzak konsolda kiriliyorsa: `--no-progress` ile sadece satir satir log.
+
+```bash
+python train/train_fusion_from_metadata.py \
+  --metadata-csv data/avlips_metadata.csv \
+  --cache-csv data/feature_cache.csv \
+  --out-model models/fusion_model.json
+```
+
+RunPod’da dataset repoda degilse once veriyi `/workspace/` altına kopyalayip `metadata_builder.py` icin `--dataset-root` yolunu buna gore ver.
+
 Windows PowerShell eski surumlerde `&&` yerine komutlari ayri satirlarda veya `;` ile calistir.
 
 ## 3) Modeli degerlendir

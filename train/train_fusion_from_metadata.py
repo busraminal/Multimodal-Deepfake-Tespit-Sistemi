@@ -2,10 +2,16 @@ import argparse
 import csv
 import json
 import sys
+import time
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 
 import numpy as np
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    tqdm = None  # type: ignore
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -31,6 +37,17 @@ def _bce_loss(y: np.ndarray, p: np.ndarray) -> float:
 def _accuracy(y: np.ndarray, p: np.ndarray, threshold: float = 0.5) -> float:
     pred = (p >= threshold).astype(np.float32)
     return float(np.mean((pred == y).astype(np.float32)))
+
+
+def _precision_recall(y: np.ndarray, p: np.ndarray, threshold: float = 0.5) -> Tuple[float, float]:
+    pred = (p >= threshold).astype(np.int32)
+    y_int = y.astype(np.int32)
+    tp = int(((pred == 1) & (y_int == 1)).sum())
+    fp = int(((pred == 1) & (y_int == 0)).sum())
+    fn = int(((pred == 0) & (y_int == 1)).sum())
+    precision = tp / (tp + fp + 1e-9)
+    recall = tp / (tp + fn + 1e-9)
+    return float(precision), float(recall)
 
 
 def _f1(y: np.ndarray, p: np.ndarray, threshold: float = 0.5) -> float:
@@ -90,6 +107,7 @@ def _fit_logreg(
     lr: float = 0.05,
     epochs: int = 500,
     l2: float = 1e-3,
+    show_progress: bool = True,
 ) -> Tuple[np.ndarray, float]:
     n, d = x_train.shape
     w = np.zeros((d,), dtype=np.float64)
@@ -98,7 +116,13 @@ def _fit_logreg(
     best_b = b
     best_val = float("inf")
 
-    for _ in range(epochs):
+    rng = range(epochs)
+    bar = None
+    if show_progress and tqdm is not None:
+        bar = tqdm(rng, desc="Fusion egitimi (BCE)", unit="epoch", dynamic_ncols=True, mininterval=0.5)
+
+    iterator = bar if bar is not None else rng
+    for _ in iterator:
         z = x_train @ w + b
         p = _sigmoid(z)
         grad_w = (x_train.T @ (p - y_train)) / n + l2 * w
@@ -112,6 +136,11 @@ def _fit_logreg(
             best_val = val_loss
             best_w = w.copy()
             best_b = b
+        if bar is not None:
+            bar.set_postfix(val_bce=f"{val_loss:.4f}", best=f"{best_val:.4f}")
+
+    if bar is not None:
+        bar.close()
 
     return best_w, best_b
 
@@ -126,25 +155,67 @@ def _extract_features(video_path: str) -> Dict[str, float]:
     return result["scores"]
 
 
-def _build_feature_cache(rows: List[Dict[str, str]], cache_csv: Path) -> None:
-    cache_csv.parent.mkdir(parents=True, exist_ok=True)
-    existing = set()
+def _load_cached_video_paths(cache_csv: Path) -> Set[str]:
+    existing: Set[str] = set()
     if cache_csv.exists() and cache_csv.stat().st_size > 0:
         with cache_csv.open("r", encoding="utf-8", newline="") as f:
             for row in csv.DictReader(f):
-                if row.get("video_path"):
-                    existing.add(row["video_path"])
+                vp = row.get("video_path", "").strip()
+                if vp:
+                    existing.add(vp)
+    return existing
 
-    n = len(rows)
+
+def _build_feature_cache(
+    rows: List[Dict[str, str]],
+    cache_csv: Path,
+    *,
+    show_progress: bool = True,
+) -> None:
+    cache_csv.parent.mkdir(parents=True, exist_ok=True)
+    existing = _load_cached_video_paths(cache_csv)
+    n_meta = len(rows)
+    pending = [r for r in rows if r["video_path"] not in existing]
+    n_pending = len(pending)
+    n_cached = n_meta - n_pending
+
+    print(
+        "\n=== Faz 1: Ozellik cache (CSV) ===\n"
+        f"  metadata satiri (bu kosu): {n_meta}\n"
+        f"  cache'te hazir:          {n_cached}\n"
+        f"  islenecek kalan:        {n_pending}\n"
+        f"  cache dosyasi:          {cache_csv.resolve()}\n",
+        flush=True,
+    )
+
+    if n_pending == 0:
+        print("  -> Tum videolar cache'te; ozellik cikarma atlaniyor.\n", flush=True)
+        return
+
+    t0 = time.perf_counter()
     with cache_csv.open("a", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         if not existing:
             writer.writerow(["video_path", "Sv", "Sl", "Sb", "Sh", "Sa", "Sf_pipeline"])
-        for idx, row in enumerate(rows, start=1):
+
+        row_iter = pending
+        if show_progress and tqdm is not None:
+            row_iter = tqdm(
+                pending,
+                desc="Ozellik cikarma",
+                unit="video",
+                total=n_pending,
+                dynamic_ncols=True,
+                mininterval=0.3,
+            )
+
+        processed = 0
+        errors = 0
+        for idx, row in enumerate(row_iter, start=1):
             video_path = row["video_path"]
-            if video_path in existing:
-                continue
-            print(f"[{idx}/{n}] ozellik: {video_path}", flush=True)
+            if tqdm is None or not show_progress:
+                print(f"  [{idx}/{n_pending}] {video_path}", flush=True)
+
             try:
                 scores = _extract_features(video_path)
                 writer.writerow(
@@ -159,8 +230,22 @@ def _build_feature_cache(rows: List[Dict[str, str]], cache_csv: Path) -> None:
                     ]
                 )
                 f.flush()
+                processed += 1
             except Exception as exc:
-                print(f"[WARN] feature extraction failed: {video_path} | {exc}")
+                errors += 1
+                err_nm = type(exc).__name__
+                err_line = f"[WARN] ozellik atlandi ({err_nm}): {video_path} | {exc}"
+                print(err_line, flush=True)
+
+    elapsed = time.perf_counter() - t0
+    avg = elapsed / max(processed, 1)
+    print(
+        f"\n=== Faz 1 bitti ===\n"
+        f"  yazilan satir (basarili): {processed}\n"
+        f"  hatali atlama:            {errors}\n"
+        f"  sure:                     {elapsed:.1f} s  (ort. {avg:.2f} s/video)\n",
+        flush=True,
+    )
 
 
 def _read_cache(cache_csv: Path) -> Dict[str, Dict[str, float]]:
@@ -169,6 +254,10 @@ def _read_cache(cache_csv: Path) -> Dict[str, Dict[str, float]]:
         for row in csv.DictReader(f):
             out[row["video_path"]] = {k: float(row[k]) for k in ["Sv", "Sl", "Sb", "Sh", "Sa", "Sf_pipeline"]}
     return out
+
+
+def _count_matched(rows: List[Dict[str, str]], cache: Dict[str, Dict[str, float]]) -> int:
+    return sum(1 for r in rows if r["video_path"] in cache)
 
 
 def _xy(rows: List[Dict[str, str]], cache: Dict[str, Dict[str, float]]) -> Tuple[np.ndarray, np.ndarray]:
@@ -203,6 +292,11 @@ def main() -> None:
         action="store_true",
         help="Delete cache CSV before run (clean rebuild for selected rows).",
     )
+    parser.add_argument(
+        "--no-progress",
+        action="store_true",
+        help="Disable tqdm bars (plain log lines only).",
+    )
     args = parser.parse_args()
 
     metadata_path = Path(args.metadata_csv)
@@ -227,8 +321,17 @@ def main() -> None:
 
     # Only extract features for rows used in training (not the full metadata CSV).
     cache_rows = train_rows + val_rows + test_rows
-    _build_feature_cache(cache_rows, cache_path)
+    _build_feature_cache(cache_rows, cache_path, show_progress=not args.no_progress)
     cache = _read_cache(cache_path)
+
+    print(
+        "\n=== Faz 2: Logistic fusion ===\n"
+        f"  train: {len(train_rows)} satir (cache eslesen: {_count_matched(train_rows, cache)})\n"
+        f"  val:   {len(val_rows)} satir (cache eslesen: {_count_matched(val_rows, cache)})\n"
+        f"  test:  {len(test_rows)} satir (cache eslesen: {_count_matched(test_rows, cache)})\n"
+        f"  lr={args.lr} epochs={args.epochs}\n",
+        flush=True,
+    )
 
     x_train, y_train = _xy(train_rows, cache)
     x_val, y_val = _xy(val_rows, cache)
@@ -241,6 +344,7 @@ def main() -> None:
         y_val=y_val,
         lr=args.lr,
         epochs=args.epochs,
+        show_progress=not args.no_progress,
     )
 
     p_val = _sigmoid(x_val @ w + b)
@@ -251,19 +355,20 @@ def main() -> None:
         threshold = float(np.clip(_best_threshold(y_val, p_val), 0.2, 0.8))
     p_test = _sigmoid(x_test @ w + b)
 
+    def _split_metrics(y: np.ndarray, p: np.ndarray, thr: float) -> Dict[str, float]:
+        pr, rc = _precision_recall(y, p, thr)
+        return {
+            "loss": _bce_loss(y, p),
+            "acc": _accuracy(y, p, thr),
+            "precision": pr,
+            "recall": rc,
+            "f1": _f1(y, p, thr),
+            "auc": _roc_auc(y, p),
+        }
+
     metrics = {
-        "val": {
-            "loss": _bce_loss(y_val, p_val),
-            "acc": _accuracy(y_val, p_val, threshold),
-            "f1": _f1(y_val, p_val, threshold),
-            "auc": _roc_auc(y_val, p_val),
-        },
-        "test": {
-            "loss": _bce_loss(y_test, p_test),
-            "acc": _accuracy(y_test, p_test, threshold),
-            "f1": _f1(y_test, p_test, threshold),
-            "auc": _roc_auc(y_test, p_test),
-        },
+        "val": _split_metrics(y_val, p_val, threshold),
+        "test": _split_metrics(y_test, p_test, threshold),
     }
 
     payload = {
