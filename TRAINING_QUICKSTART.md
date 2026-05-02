@@ -197,11 +197,15 @@ cd /workspace
 source .venv/bin/activate 2>/dev/null || python3 -m venv .venv && source .venv/bin/activate
 pip install -q gdown
 
-# Google Drive dosya ID (release sayfasindaki baglanti ile ayni)
-gdown --fuzzy "https://drive.google.com/file/d/1fEiUo22GBSnWD7nfEwDW86Eiza-pOEJm/view?usp=sharing"
+# gdown 6.x: --fuzzy yok; paylasim veya uc?id= URL’si ayni dosyayi indirir.
+# ~9 GB; kesilirse: tekrar veya ayni komuta --continue ekleyerek surdur.
+gdown --continue -O AVLips_v1.0.zip "https://drive.google.com/uc?id=1fEiUo22GBSnWD7nfEwDW86Eiza-pOEJm"
+# Paylasim linki de olur (gdown 6 dosya ID’sini kendisi cikarir):
+# gdown --continue -O AVLips_v1.0.zip "https://drive.google.com/file/d/1fEiUo22GBSnWD7nfEwDW86Eiza-pOEJm/view?usp=sharing"
 
-# Inen dosya adi zip/7z/rar olabilir; ornek:
-unzip -q *.zip -d AVLips_unpacked 2>/dev/null || (apt-get update && apt-get install -y unzip && unzip -q *.zip -d AVLips_unpacked)
+mkdir -p AVLips_unpacked
+(unzip -q AVLips_v1.0.zip -d AVLips_unpacked) || (apt-get update && apt-get install -y unzip && unzip -q AVLips_v1.0.zip -d AVLips_unpacked)
+# Arsiv .7z ise: apt-get install -y p7zip-full && 7z x AVLips_v1.0.7z -oAVLips_unpacked
 
 find /workspace/AVLips_unpacked -maxdepth 5 -type d -name '0_real'
 ```
