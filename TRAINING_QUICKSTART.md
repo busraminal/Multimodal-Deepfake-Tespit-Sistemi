@@ -186,6 +186,28 @@ find /workspace -maxdepth 5 -type d \( -name 0_real -o -name 1_fake \) 2>/dev/nu
 
 Cikan yolun **ust** dizinini `export DATASET_ROOT=...` yap (icinde hem `0_real` hem `1_fake` olan klasor).
 
+#### Internetten indirme (resmi AVLips v1.0, ~9 GB sikistirilmis)
+
+Kaynak: [LipFD — release “AVLips dataset v1.0”](https://github.com/AaronComo/LipFD/releases/tag/dataset) (NeurIPS 2024 calismasi; veri **Google Drive** uzerinde).
+
+RunPod’da ornek:
+
+```bash
+cd /workspace
+source .venv/bin/activate 2>/dev/null || python3 -m venv .venv && source .venv/bin/activate
+pip install -q gdown
+
+# Google Drive dosya ID (release sayfasindaki baglanti ile ayni)
+gdown --fuzzy "https://drive.google.com/file/d/1fEiUo22GBSnWD7nfEwDW86Eiza-pOEJm/view?usp=sharing"
+
+# Inen dosya adi zip/7z/rar olabilir; ornek:
+unzip -q *.zip -d AVLips_unpacked 2>/dev/null || (apt-get update && apt-get install -y unzip && unzip -q *.zip -d AVLips_unpacked)
+
+find /workspace/AVLips_unpacked -maxdepth 5 -type d -name '0_real'
+```
+
+Cikan `.../0_real` yolunun **bir ust dizini** `DATASET_ROOT` olur (genelde `.../AVLips` veya `.../AVLips v1.0/AVLips`). Indirme basarisiz olursa tarayicidan ayni release linkini acip manuel export da denenebilir; buyuk dosyada `gdown` bazen tekrar calistirmayi gerektirir.
+
 ### 1) Ortam (tek blok, bash)
 
 Podda `bash` ac; proje ve venv:
