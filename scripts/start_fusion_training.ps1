@@ -11,6 +11,8 @@ $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
 $env:PYTHONUNBUFFERED = "1"
+# FFmpeg her clip icin cok log basar; tqdm (N/7602, ETA) satirini kaybetmemek icin:
+$env:FFMPEG_QUIET = "1"
 $Log = Join-Path $Root ("training_" + (Get-Date -Format "yyyyMMdd_HHmm") + ".log")
 
 $py = Join-Path $Root ".venv\Scripts\python.exe"
