@@ -1,7 +1,11 @@
 # Tam AVLips fusion egitimi: Faz 1 ozellik cache + Faz 2 logistic fusion.
 # Yeni PowerShell penceresinde calistirin; tqdm ilerlemesi + log dosyasi.
 
-$ErrorActionPreference = "Stop"
+# Stop kullanma: tqdm/Python uyariyi stderr'a yazinca PS bunu terminating error sayar (NativeCommandError).
+$ErrorActionPreference = "Continue"
+if ($PSVersionTable.PSVersion.Major -ge 7) {
+    $PSNativeCommandUseErrorActionPreference = $false
+}
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
