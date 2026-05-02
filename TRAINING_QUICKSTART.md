@@ -162,3 +162,96 @@ docker compose up -d --build
 
 Sunucuda `models/` icine `full_c23.p` (veya `DF_VISUAL_MODEL_PATH`) koy; bos volume ile ezilirse gorsel model yuklenmez.
 
+---
+
+## RunPod (GPU pod) — bastan egitim
+
+Asagidaki yol, RunPod’da **PyTorch + CUDA** sablonu (or. `runpod/pytorch` veya resmi PyTorch imaji) ve veri setinin podda erisilebilir bir dizinde oldugu varsayimina gore yazildi.
+
+### 0) Veri seti
+
+AVLips kokunde `0_real/` ve `1_fake/` klasorleri olmali. Ornek yollar:
+
+- Network volume: `/workspace/AVLips`
+- Veya repoyla ayni disk: `/workspace/data/AVLips`
+
+Veriyi pod’a **volume**, **RunPod dosya yukleme** veya `rsync`/`scp` ile koy; repoda veri yok.
+
+### 1) Ortam (tek blok, bash)
+
+Podda `bash` ac; proje ve venv:
+
+```bash
+cd /workspace
+git clone https://github.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi.git
+cd Multimodal-Deepfake-Tespit-Sistemi
+
+apt-get update && apt-get install -y ffmpeg   # ffmpeg yoksa (imaja gore sudo gerekebilir)
+
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
+PyTorch: **CUDA surumunu** podunun CUDA’sina gore [pytorch.org](https://pytorch.org/get-started/locally/) uzerinden sec. Ornek (CUDA 12.4 uyumlu teker — surumu ihtiyaca gore degistir):
+
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+pip install -r deploy/requirements-runtime.txt
+```
+
+Gorsel checkpoint kullanacaksan `models/faceforensics/full/full_c23.p` kopyala veya:
+
+```bash
+export DF_VISUAL_MODEL_PATH=/workspace/full_c23.p
+```
+
+### 2) Metadata
+
+`DATASET_ROOT` ve gercek kokunu kendi yoluna cevir:
+
+```bash
+export DATASET_ROOT=/workspace/AVLips   # 0_real ve 1_fake burada
+
+python data_tools/metadata_builder.py \
+  --dataset-root "$DATASET_ROOT" \
+  --out-csv data/avlips_metadata.csv \
+  --train-ratio 0.70 \
+  --val-ratio 0.15 \
+  --seed 42
+```
+
+### 3) Egitim (terminalden izleme)
+
+Uzun kosular icin `tmux new -s train` sonra:
+
+```bash
+source /workspace/Multimodal-Deepfake-Tespit-Sistemi/.venv/bin/activate
+cd /workspace/Multimodal-Deepfake-Tespit-Sistemi
+
+python train/train_fusion_from_metadata.py \
+  --metadata-csv data/avlips_metadata.csv \
+  --cache-csv data/feature_cache.csv \
+  --out-model models/fusion_model.json \
+  --lr 0.05 \
+  --epochs 500
+```
+
+Hizli smoke test:
+
+```bash
+python train/train_fusion_from_metadata.py \
+  --metadata-csv data/avlips_metadata.csv \
+  --cache-csv data/feature_cache_dev.csv \
+  --out-model models/fusion_model_dev.json \
+  --max-per-split 40 \
+  --epochs 120
+```
+
+Cikti: `data/feature_cache.csv` (artan cache), `models/fusion_model.json`. Uzak SSH’da cubuk kirilirsa `--no-progress` ekle.
+
+### 4) Sonuclari disari alma
+
+- `scp` veya RunPod dosya paneli ile `models/fusion_model.json` ve istege bagli `data/feature_cache.csv` indirilebilir.
+- Volume kullaniyorsan cache bir sonraki podda da kullanilir; metadata ayni yollarla yazildiysa egitim kaldigi yerden eksik videolari tamamlar.
+
