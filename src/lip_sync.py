@@ -3,7 +3,6 @@ import numpy as np
 import librosa
 import cv2
 import mediapipe as mp
-from scipy.signal import correlate
 from scipy.spatial.distance import euclidean
 
 # =====================================================
@@ -37,8 +36,10 @@ def extract_audio_energy(audio_path, fps=25):
     if len(energies) == 0:
         return None
 
-    # normalize 0-1
-    energies = (energies - energies.min()) / (energies.max() + 1e-9)
+    # normalize 0-1 (range-based)
+    e_min = float(energies.min())
+    e_max = float(energies.max())
+    energies = (energies - e_min) / (e_max - e_min + 1e-9)
     return energies
 
 
@@ -76,26 +77,48 @@ def lip_openings(frames_dir, fps=25):
     if len(arr) == 0:
         return None
 
-    # normalize 0-1
-    arr = (arr - arr.min()) / (arr.max() + 1e-9)
+    # normalize 0-1 (range-based)
+    a_min = float(arr.min())
+    a_max = float(arr.max())
+    arr = (arr - a_min) / (a_max - a_min + 1e-9)
     return arr
 
 
 # -----------------------------------------------------
 # 3) Korelasyon (lip-sync senkronu)
 # -----------------------------------------------------
-def lip_sync_correlation(audio_energy, lip_motion):
+def lip_sync_correlation(audio_energy, lip_motion, max_lag=6):
     # ikisini aynı uzunluğa getir
     L = min(len(audio_energy), len(lip_motion))
     a = audio_energy[:L]
     v = lip_motion[:L]
+    if L < 4:
+        return 0.5
 
-    corr = np.corrcoef(a, v)[0, 1]
-    if np.isnan(corr):
-        corr = 0.0
+    # Farkli AV gecikmelerine toleransli sync olcumu.
+    best = -1.0
+    max_lag = int(max(0, min(max_lag, L // 3)))
+    for lag in range(-max_lag, max_lag + 1):
+        if lag < 0:
+            aa = a[:lag]
+            vv = v[-lag:]
+        elif lag > 0:
+            aa = a[lag:]
+            vv = v[:-lag]
+        else:
+            aa = a
+            vv = v
+        if len(aa) < 4:
+            continue
+        c = np.corrcoef(aa, vv)[0, 1]
+        if np.isnan(c):
+            c = 0.0
+        # anti-sync de uyumsuzluk göstergesi olabildiği için mutlak korelasyon.
+        best = max(best, abs(float(c)))
 
-    # -1..1 → 0..1
-    return float((corr + 1) / 2)
+    if best < 0:
+        best = 0.0
+    return float(np.clip(best, 0.0, 1.0))
 
 
 # -----------------------------------------------------
@@ -108,5 +131,7 @@ def lip_mismatch_score(audio_path, frames_dir):
     if audio_energy is None or lip_motion is None:
         return 0.0
 
-    Sl = lip_sync_correlation(audio_energy, lip_motion)
-    return float(np.clip(Sl, 0, 1))
+    sync_score = lip_sync_correlation(audio_energy, lip_motion)
+    # Fusion'da Sl fake yönlü kullanılıyor: yüksek Sl => daha çok mismatch.
+    mismatch_score = 1.0 - sync_score
+    return float(np.clip(mismatch_score, 0.0, 1.0))
