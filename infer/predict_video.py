@@ -28,7 +28,13 @@ def main() -> None:
     result = analyze(args.video)
     scores = result.get("scores", {})
 
-    feats = [float(scores.get(name, 0.0)) for name in model["feature_names"]]
+    feats = np.array([float(scores.get(name, 0.0)) for name in model["feature_names"]], dtype=np.float64)
+    if bool(model.get("standardize", False)):
+        mu = np.array(model.get("scaler_mean") or [], dtype=np.float64)
+        sigma = np.array(model.get("scaler_std") or [], dtype=np.float64)
+        if len(mu) == len(feats) and len(sigma) == len(feats):
+            sigma_safe = np.where(sigma < 1e-9, 1.0, sigma)
+            feats = (feats - mu) / sigma_safe
     z = float(np.dot(np.array(feats, dtype=np.float64), np.array(model["weights"], dtype=np.float64)) + float(model["bias"]))
     p_fake = _sigmoid(z)
     threshold = float(model.get("threshold", 0.5))

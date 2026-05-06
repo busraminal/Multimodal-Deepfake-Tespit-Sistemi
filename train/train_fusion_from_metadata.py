@@ -20,7 +20,7 @@ if str(ROOT) not in sys.path:
 from src.analyze_video import analyze
 
 
-FEATURES = ["Sv", "Sl", "Sb", "Sh", "Sa"]
+ALL_FEATURES = ["Sv", "Sl", "Sb", "Sh", "Sa"]
 
 
 def _sigmoid(z: np.ndarray) -> np.ndarray:
@@ -63,6 +63,18 @@ def _f1(y: np.ndarray, p: np.ndarray, threshold: float = 0.5) -> float:
     return float(2 * precision * recall / (precision + recall + 1e-9))
 
 
+def _balanced_acc(y: np.ndarray, p: np.ndarray, threshold: float = 0.5) -> float:
+    pred = (p >= threshold).astype(np.int32)
+    y_int = y.astype(np.int32)
+    tp = int(((pred == 1) & (y_int == 1)).sum())
+    fn = int(((pred == 0) & (y_int == 1)).sum())
+    tn = int(((pred == 0) & (y_int == 0)).sum())
+    fp = int(((pred == 1) & (y_int == 0)).sum())
+    tpr = tp / (tp + fn + 1e-9)
+    tnr = tn / (tn + fp + 1e-9)
+    return float(0.5 * (tpr + tnr))
+
+
 def _roc_auc(y: np.ndarray, p: np.ndarray) -> float:
     order = np.argsort(-p)
     y_sorted = y[order]
@@ -88,14 +100,22 @@ def _roc_auc(y: np.ndarray, p: np.ndarray) -> float:
     return float(auc)
 
 
-def _best_threshold(y: np.ndarray, p: np.ndarray) -> float:
+def _best_threshold(y: np.ndarray, p: np.ndarray, objective: str = "f1") -> float:
     best_t = 0.5
-    best_f1 = -1.0
+    best_score = -1.0
     for t in np.linspace(0.1, 0.9, 81):
-        f1_val = _f1(y, p, threshold=float(t))
-        if f1_val > best_f1:
-            best_f1 = f1_val
-            best_t = float(t)
+        t_val = float(t)
+        if objective == "balanced_acc":
+            score = _balanced_acc(y, p, threshold=t_val)
+        else:
+            score = _f1(y, p, threshold=t_val)
+        if score > best_score + 1e-12:
+            best_score = score
+            best_t = t_val
+        elif abs(score - best_score) <= 1e-12:
+            # Tie-break: keep threshold close to 0.5 to avoid degenerate all-positive/all-negative outputs.
+            if abs(t_val - 0.5) < abs(best_t - 0.5):
+                best_t = t_val
     return best_t
 
 
@@ -107,6 +127,7 @@ def _fit_logreg(
     lr: float = 0.05,
     epochs: int = 500,
     l2: float = 1e-3,
+    pos_weight: float = 1.0,
     show_progress: bool = True,
 ) -> Tuple[np.ndarray, float]:
     n, d = x_train.shape
@@ -122,11 +143,14 @@ def _fit_logreg(
         bar = tqdm(rng, desc="Fusion egitimi (BCE)", unit="epoch", dynamic_ncols=True, mininterval=0.5)
 
     iterator = bar if bar is not None else rng
+    sample_w = np.where(y_train > 0.5, pos_weight, 1.0).astype(np.float64)
+    sw_sum = float(np.sum(sample_w))
     for _ in iterator:
         z = x_train @ w + b
         p = _sigmoid(z)
-        grad_w = (x_train.T @ (p - y_train)) / n + l2 * w
-        grad_b = float(np.mean(p - y_train))
+        err = (p - y_train) * sample_w
+        grad_w = (x_train.T @ err) / max(sw_sum, 1e-9) + l2 * w
+        grad_b = float(np.sum(err) / max(sw_sum, 1e-9))
         w -= lr * grad_w
         b -= lr * grad_b
 
@@ -252,7 +276,7 @@ def _read_cache(cache_csv: Path) -> Dict[str, Dict[str, float]]:
     out: Dict[str, Dict[str, float]] = {}
     with cache_csv.open("r", encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
-            out[row["video_path"]] = {k: float(row[k]) for k in ["Sv", "Sl", "Sb", "Sh", "Sa", "Sf_pipeline"]}
+            out[row["video_path"]] = {k: float(row[k]) for k in [*ALL_FEATURES, "Sf_pipeline"]}
     return out
 
 
@@ -260,18 +284,27 @@ def _count_matched(rows: List[Dict[str, str]], cache: Dict[str, Dict[str, float]
     return sum(1 for r in rows if r["video_path"] in cache)
 
 
-def _xy(rows: List[Dict[str, str]], cache: Dict[str, Dict[str, float]]) -> Tuple[np.ndarray, np.ndarray]:
+def _xy(rows: List[Dict[str, str]], cache: Dict[str, Dict[str, float]], feature_names: List[str]) -> Tuple[np.ndarray, np.ndarray]:
     xs: List[List[float]] = []
     ys: List[float] = []
     for row in rows:
         video_path = row["video_path"]
         if video_path not in cache:
             continue
-        xs.append([cache[video_path][f] for f in FEATURES])
+        xs.append([cache[video_path][f] for f in feature_names])
         ys.append(float(row["label"]))
     if not xs:
         raise RuntimeError("No matched rows between metadata and feature cache.")
     return np.array(xs, dtype=np.float64), np.array(ys, dtype=np.float64)
+
+
+def _standardize_with_train(
+    x_train: np.ndarray, x_val: np.ndarray, x_test: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    mu = x_train.mean(axis=0)
+    sigma = x_train.std(axis=0)
+    sigma = np.where(sigma < 1e-9, 1.0, sigma)
+    return (x_train - mu) / sigma, (x_val - mu) / sigma, (x_test - mu) / sigma, mu, sigma
 
 
 def main() -> None:
@@ -279,8 +312,25 @@ def main() -> None:
     parser.add_argument("--metadata-csv", required=True, help="CSV with columns: video_path,label,split")
     parser.add_argument("--cache-csv", default="data/feature_cache.csv", help="Feature cache path")
     parser.add_argument("--out-model", default="models/fusion_model.json", help="Output model json")
+    parser.add_argument(
+        "--features",
+        default="Sv",
+        help="Comma-separated fusion features. Options: Sv,Sl,Sb,Sh,Sa (default: Sv)",
+    )
     parser.add_argument("--lr", type=float, default=0.05)
     parser.add_argument("--epochs", type=int, default=500)
+    parser.add_argument("--l2", type=float, default=1e-3, help="L2 regularization strength")
+    parser.add_argument(
+        "--pos-weight",
+        type=float,
+        default=1.0,
+        help="Positive class weight (>1 boosts fake recall, <1 boosts precision).",
+    )
+    parser.add_argument(
+        "--standardize",
+        action="store_true",
+        help="Standardize features using train split mean/std before logistic fit.",
+    )
     parser.add_argument(
         "--max-per-split",
         type=int,
@@ -297,11 +347,23 @@ def main() -> None:
         action="store_true",
         help="Disable tqdm bars (plain log lines only).",
     )
+    parser.add_argument(
+        "--threshold-objective",
+        choices=["f1", "balanced_acc"],
+        default="balanced_acc",
+        help="Validation metric to choose decision threshold.",
+    )
     args = parser.parse_args()
 
     metadata_path = Path(args.metadata_csv)
     cache_path = Path(args.cache_csv)
     out_model = Path(args.out_model)
+    feature_names = [x.strip() for x in args.features.split(",") if x.strip()]
+    invalid_features = [x for x in feature_names if x not in ALL_FEATURES]
+    if not feature_names:
+        raise ValueError("No feature selected. Use --features Sv or e.g. --features Sv,Sh,Sa")
+    if invalid_features:
+        raise ValueError(f"Unknown features: {invalid_features}. Allowed: {ALL_FEATURES}")
 
     if args.reset_cache:
         cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -326,16 +388,21 @@ def main() -> None:
 
     print(
         "\n=== Faz 2: Logistic fusion ===\n"
+        f"  features: {feature_names}\n"
         f"  train: {len(train_rows)} satir (cache eslesen: {_count_matched(train_rows, cache)})\n"
         f"  val:   {len(val_rows)} satir (cache eslesen: {_count_matched(val_rows, cache)})\n"
         f"  test:  {len(test_rows)} satir (cache eslesen: {_count_matched(test_rows, cache)})\n"
-        f"  lr={args.lr} epochs={args.epochs}\n",
+        f"  lr={args.lr} epochs={args.epochs} l2={args.l2} pos_weight={args.pos_weight} standardize={args.standardize}\n",
         flush=True,
     )
 
-    x_train, y_train = _xy(train_rows, cache)
-    x_val, y_val = _xy(val_rows, cache)
-    x_test, y_test = _xy(test_rows, cache)
+    x_train, y_train = _xy(train_rows, cache, feature_names)
+    x_val, y_val = _xy(val_rows, cache, feature_names)
+    x_test, y_test = _xy(test_rows, cache, feature_names)
+    scaler_mean = None
+    scaler_std = None
+    if args.standardize:
+        x_train, x_val, x_test, scaler_mean, scaler_std = _standardize_with_train(x_train, x_val, x_test)
 
     w, b = _fit_logreg(
         x_train=x_train,
@@ -344,6 +411,8 @@ def main() -> None:
         y_val=y_val,
         lr=args.lr,
         epochs=args.epochs,
+        l2=args.l2,
+        pos_weight=args.pos_weight,
         show_progress=not args.no_progress,
     )
 
@@ -352,7 +421,11 @@ def main() -> None:
     if len(y_val) < 20:
         threshold = 0.5
     else:
-        threshold = float(np.clip(_best_threshold(y_val, p_val), 0.2, 0.8))
+        best_thr = _best_threshold(y_val, p_val, objective=args.threshold_objective)
+        if args.threshold_objective == "balanced_acc":
+            threshold = float(best_thr)
+        else:
+            threshold = float(np.clip(best_thr, 0.2, 0.8))
     p_test = _sigmoid(x_test @ w + b)
 
     def _split_metrics(y: np.ndarray, p: np.ndarray, thr: float) -> Dict[str, float]:
@@ -372,10 +445,20 @@ def main() -> None:
     }
 
     payload = {
-        "feature_names": FEATURES,
+        "feature_names": feature_names,
         "weights": w.tolist(),
         "bias": float(b),
         "threshold": float(threshold),
+        "standardize": bool(args.standardize),
+        "scaler_mean": scaler_mean.tolist() if scaler_mean is not None else None,
+        "scaler_std": scaler_std.tolist() if scaler_std is not None else None,
+        "train_config": {
+            "lr": args.lr,
+            "epochs": args.epochs,
+            "l2": args.l2,
+            "pos_weight": args.pos_weight,
+            "threshold_objective": args.threshold_objective,
+        },
         "metrics": metrics,
     }
     out_model.parent.mkdir(parents=True, exist_ok=True)

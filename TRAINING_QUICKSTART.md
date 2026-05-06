@@ -82,6 +82,8 @@ python train/train_fusion_from_metadata.py ^
   --epochs 500
 ```
 
+Not: Guncel surumde fusion varsayilan olarak `--features Sv` ile egitir (mevcut cache analizinde en stabil sinyal). Istersen `--features Sv,Sh,Sa` veya tumu icin `--features Sv,Sl,Sb,Sh,Sa` verebilirsin.
+
 Onceki yarim kalmis cache'i silip bastan uretmek icin `--reset-cache` ekle.
 
 Hizli test icin:

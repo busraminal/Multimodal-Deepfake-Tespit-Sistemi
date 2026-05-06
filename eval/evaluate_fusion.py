@@ -100,10 +100,16 @@ def main() -> None:
     w = np.array(model["weights"], dtype=np.float64)
     b = float(model["bias"])
     t = float(model.get("threshold", 0.5))
+    use_std = bool(model.get("standardize", False))
+    mu = np.array(model.get("scaler_mean") or [], dtype=np.float64)
+    sigma = np.array(model.get("scaler_std") or [], dtype=np.float64)
 
     for split in ("val", "test"):
         rows = [r for r in metadata if r["split"] == split]
         x, y = _xy(rows, cache, feature_names)
+        if use_std and len(mu) == x.shape[1] and len(sigma) == x.shape[1]:
+            sigma_safe = np.where(sigma < 1e-9, 1.0, sigma)
+            x = (x - mu) / sigma_safe
         p = _sigmoid(x @ w + b)
         metrics = {
             "count": int(len(y)),
