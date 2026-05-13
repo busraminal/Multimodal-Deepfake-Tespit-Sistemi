@@ -1,217 +1,222 @@
-# 🎭 Multimodal Deepfake Detection System
-**Vision • Audio • Lip-Sync • Explainability • LLM Support**
+# Multimodal Deepfake Tespit Sistemi
 
-Bu proje, **deepfake videolarını çoklu modalite (görüntü + ses + dudak–ses senkronu)** üzerinden analiz eden,
-**açıklanabilir (XAI)** ve **uçtan uca çalışan** bir yapay zeka sistemidir.
+**Görüntü · Ses · Biyomekanik · Dudak–ses senkronu · Açıklanabilirlik · LLM desteği**
 
-Amaç yalnızca *“fake mi?”* demek değil;
-**“neden fake / neden gerçek?”** sorusuna **kanıta dayalı açıklama** üretmektir.
+Bu proje, videoları **çoklu modalite** üzerinden analiz eden ve mümkün olduğunca **kanıta dayalı açıklama** üreten bir araştırma sistemidir. Amaç yalnızca “fake mi?” demek değil; modal skorlar, ısı haritaları ve isteğe bağlı LLM metniyle **“neden şüpheli / neden gerçek?”** sorusuna yanıt vermektir.
 
----
-
-## 🔎 Quick Facts
-- **Görev:** Multimodal Deepfake Tespiti
-- **Modaliteler:** Görüntü, Ses, Dudak–Ses Senkronu
-- **Açıklanabilirlik:** Grad-CAM + LLM
-- **Çıktılar:** Skor + İnsan-okur açıklama + PDF raporu
-- **Durum:** Araştırma / Prototip
+**Depo:** [github.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi](https://github.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi)
 
 ---
 
-## 🎯 Vitrin
-> Aşağıdaki tüm görseller ve çıktılar, sistemin **gerçek zamanlı** çalışması sırasında elde edilmiştir.
+## Öne çıkanlar
 
-### 🖥️ Arayüz (UI)
-Sistem, yüklenen video için **görüntü**, **ses** ve **dudak–ses senkronizasyonu** analizlerini
-**paralel** olarak çalıştırır ve tüm çıktıları **tek bir panelde** sunar.
+| | |
+|---|---|
+| **Görev** | Çok modlu deepfake / manipülasyon tespiti |
+| **Modal skorlar** | `Sv` görüntü, `Sa` ses artefaktı, `Sl` dudak–ses, `Sb` göz kırpma, `Sh` baş pozu, `Sf` füzyon çıktısı |
+| **XAI** | Grad-CAM (görsel odak), skor tabanlı yorumlar |
+| **Arayüz** | Streamlit: paralel analiz, grafikler, PDF |
+| **Ölçeklenebilir değerlendirme** | Özellik önbelleği, lojistik / HistGB füzyon, 5-fold CV, Platt kalibrasyonu |
+
+---
+
+## Vitrin (UI ve çıktılar)
+
+> Görseller, sistemin çalışır halinden alınmıştır.
+
+### Arayüz
+
+Yüklenen video için görüntü, ses ve dudak–ses analizleri paralel çalışır; çıktılar tek panelde toplanır.
 
 ![Arayüz](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/1_arayüz.png)
 
----
-
-### 🔍 Explainability — Grad-CAM
-CNN tabanlı görsel modelin karar verirken odaklandığı yüz bölgeleri **Grad-CAM** ile görselleştirilir.
+### Explainability — Grad-CAM
 
 | Deepfake | Gerçek (BN) |
 |---|---|
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/grandcam_bn.jpg) |
 
-![Arayüz Yorumu](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png)
+![Grad-CAM yorumu](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/gradcam_cıktı_arayüz_yorumu.png)
 
-**Açıklanabilirlik Kapsamı**
-- Açıklamalar **post-hoc**tur; nedensel değildir.
-- Grad-CAM ayırt edici bölgeleri vurgular, mutlak doğruluk göstermez.
-- LLM açıklamaları model çıktılarıyla koşulludur.
+**Not:** Grad-CAM ve LLM çıktıları *post-hoc* açıklamalardır; nedensel garanti taşımazlar.
 
----
-
-### 👄 Ağız Kareleri (BN vs DF)
-Gerçek ve deepfake videolardan çıkarılan ağız ROI kareleri karşılaştırılır.
+### Ağız ROI karşılaştırması
 
 | Gerçek (BN) | Deepfake (DF) |
 |---|---|
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agız_kareleri_bn.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/agız_kareleri_df.png) |
 
----
-
-### 🧠 LLM Yorumları
-Sayısal skorlar, LLM tarafından **“neden fake / neden gerçek?”** sorusuna yanıt verecek şekilde metne dönüştürülür.
+### LLM yorumları ve PDF
 
 | Gerçek (BN) | Deepfake (DF) |
 |---|---|
 | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_gercek_video_yanıtı.png) | ![](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/df_llm_yanıtı.jpeg) |
 
-![LLM Akış](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladım.png)
+![LLM bağlantısı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/hangi_dosyada_llm_bagladım.png)
+
+![PDF çıktısı](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_cıktısı.png)
+
+![Parametre grafikleri](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/parametre_grafikleri.png)
+
+### Demo videosu
+
+[Demo (MP4)](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/assets/demo.mp4)
 
 ---
 
-### 📄 PDF Rapor
-Analiz sonuçları otomatik olarak **PDF raporu**na dönüştürülür.
+## Sistem mimarisi (güncel)
 
-![PDF](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/pdf_cıktısı.png)
-
----
-
-### 📊 Parametre Grafikleri
-Skorlar ve eşikler grafiksel olarak sunulur.
-
-![Grafikler](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/screenshots/parametre_grafikleri.png)
-
----
-
-### 🎥 Demo
-👉 **[Demo videosu](https://raw.githubusercontent.com/busraminal/Multimodal-Deepfake-Tespit-Sistemi/main/assets/demo.mp4)**
-
----
-
-## 🧠 Sistem Mimarisi
 ```
 Video
- ├─ Görsel Analiz (CNN + Grad-CAM) → Sv
- ├─ Ses Analizi (ASR + Artefakt) → Sa
- ├─ Dudak–Ses Senkronu (AV Alignment) → Sl
- └─ Karar Füzyonu → Sf
+ ├─ Görsel (CNN + Grad-CAM)          → Sv
+ ├─ Ses (ASR + artefakt)             → Sa
+ ├─ Dudak–ses hizası                 → Sl
+ ├─ Göz kırpma / baş (biyomekanik) → Sb, Sh
+ └─ Öğrenilmiş füzyon (eğitimle)    → Sf  (+ eşik / olasılık)
         ↓
- Açıklanabilir Skor + Metinsel Gerekçe
+ Streamlit / JSON / PDF + isteğe bağlı LLM metni
 ```
 
-**Füzyon:** `Sf = α·Sv + (1−α)·Sl`,  `α ∈ [0.3, 0.7]`
+**Füzyon:** Arayüzde hâlâ ağırlıklı `src/fusion.py` yorumları kullanılabilir; **toplu değerlendirme ve CLI tahmini** için eğitilmiş model (`models/fusion_model.json`, lojistik) kullanılır. Araştırma hattında **HistGradientBoosting + Platt kalibrasyonu** ile daha güçlü metrikler elde edilir (aşağıda özet, ayrıntı `results/v2/SUMMARY.md`).
 
 ---
 
-## 🔍 Modaliteler
-- **Görüntü:** Xception/CNN, frame-level analiz, Grad-CAM
-- **Ses:** ASR tabanlı çözümleme, artefakt analizi
-- **Dudak–Ses:** Ağız ROI, AV hizalama
-- **LLM:** Skorların metinsel açıklaması
+## AVLips ölçekli değerlendirme (v2 özeti)
+
+AVLips v1.0 düzenine uygun **`data/avlips_metadata.csv`** ile yapılan çalışmada (7602 video; sabit train/val/test bölünmesi) modal skorlar `data/feature_cache*` ile önbelleğe alınır. Raporlanan metrikler `results/v2/` altındaki JSON dosyaları ve [results/v2/SUMMARY.md](results/v2/SUMMARY.md) ile uyumludur.
+
+| Model | Test dengeli doğruluk | Test AUC |
+|-------|------------------------|----------|
+| Lojistik füzyon (üretim/CLI varsayılanı, Sl+Sa) | ~0.53 | ~0.51 |
+| HistGB (6 özellik: Sv, Sl, Sb, Sh, Sa, Sf) | ~0.56 | ~0.61 |
+| 5-fold CV — HistGB (ortalama ± std) | **0.594 ± 0.011** | **0.623 ± 0.011** |
+
+Platt kalibrasyonu ile test **ECE** yaklaşık **0.025** seviyesine iner. Üretim CLI şu an lojistik `fusion_model.json` bekler; HistGB+Platt’ı tahmin boru hattına taşımak için `eval/train_fusion_histgb.py` ve `results/v2/fusion_calibration.json` yol haritası `SUMMARY.md` Bölüm 7’de özetlenmiştir.
+
+**Teknik derinlik:** [docs/MAKALE_TEKNIK_MULTIMODAL_DEEPFAKE.md](docs/MAKALE_TEKNIK_MULTIMODAL_DEEPFAKE.md)
 
 ---
 
-## 📂 Proje Yapısı
+## Proje yapısı
+
 ```
-deepfake_project/
-├── src/
-│   ├── app.py
-│   ├── media_io.py
-│   ├── visual_model.py
-│   ├── visual_score.py
-│   ├── gradcam_utils.py
-│   ├── audio_artefact.py
-│   ├── asr_text.py
-│   ├── lip_sync.py
-│   ├── mouth_detect.py
-│   ├── mouth_embed.py
-│   ├── fusion.py
-│   ├── llm_client.py
-│   └── biomech.py
-├── network/models/
-├── assets/demo.mp4
-├── sample_data/
-├── server.py
-├── run_demo.py
-├── rag_knowledge.json
+Multimodal-Deepfake-Tespit-Sistemi/
+├── src/                    # Streamlit app, analiz, modal skorlar, fusion yardımcıları
+├── infer/                  # predict_video.py, batch_predict_json.py
+├── train/                  # train_fusion_from_metadata.py, auto_select_fusion_model.py, tune_fusion_hparams.py
+├── eval/                   # evaluate_fusion, fusion_cv, fusion_calibration, train_fusion_histgb, hata raporları, figürler
+├── data_tools/             # metadata_builder, refresh_sl_cache, Sl diff araçları
+├── scripts/                # PowerShell boru hatları (fusion, Sl yenileme)
+├── data/                   # avlips_metadata.csv (repoda); feature_cache* .gitignore
+├── docs/                   # teknik makale (Türkçe)
+├── results/                # v2 metrikler, figürler, hata analizi çıktıları
+├── models/                 # fusion_model.json tipik olarak .gitignore; _auto_search deney JSON’ları repoda olabilir
+├── network/models/         # TransferModel vb.
+├── sample_data/, assets/, screenshots/
 ├── requirements.txt
+├── run_demo.py, server.py
 └── README.md
 ```
 
 ---
 
-## 📂 Veri Seti
-Bu projede yeni bir veri seti oluşturulmamıştır.
-Sistem, **demo ve nitel analiz** amacıyla sınırlı sayıda gerçek ve deepfake video ile çalışır.
+## Modalite özeti
 
-- Görsel model: **FaceForensics++ pretrained** ağırlıkları
-- Modeller yalnızca **inference** amaçlıdır ve repoda paylaşılmaz
-
----
-
-## 🧩 Modality–Responsibility Mapping
-| Modality | Yöntem | Çıktı |
-|---|---|---|
-| Görüntü | CNN + Grad-CAM | Frame skorları + ısı haritaları |
-| Ses | ASR + Artefakt | Ses özgünlük skoru |
-| Dudak–Ses | AV Alignment | Senkron tutarlılık skoru |
-| LLM | Prompted reasoning | Metinsel açıklama |
+| Sinyal | Yaklaşık rol | Çıktı |
+|--------|----------------|--------|
+| Görüntü | FaceForensics++ tabanlı omurga, Grad-CAM | `Sv`, ısı haritası |
+| Ses | Whisper ASR + artefakt skoru | `Sa` |
+| Dudak–ses | ROI + senkron tutarlılığı (v2’de varyans kapısı, MA, hız karışımı) | `Sl` |
+| Biyomekanik | Göz kırpma, baş pozu | `Sb`, `Sh` |
+| Füzyon | Eğitilmiş sınıflandırıcı | `Sf`, olasılık |
+| LLM | İstemle metin | İnsan-okur gerekçe |
 
 ---
 
-## ♻️ Reproducibility
-- Python **>= 3.10**
-- Windows / Linux test edildi
-- GPU opsiyonel (CPU destekli)
+## Kurulum
 
----
+- Python **3.10+** (Windows / Linux; GPU isteğe bağlı)
+- [FFmpeg](https://ffmpeg.org/) PATH’te olmalı (video/ses işleme)
 
-## ⚙️ Kurulum
 ```bash
 pip install -r requirements.txt
+pip install streamlit plotly
 ```
 
-## ▶️ Çalıştırma
+`requirements.txt` çekirdek bilim kütüphanelerini listeler; **Streamlit arayüzü** için `streamlit` ve `plotly` ayrıca yüklenmelidir. Görsel omurga için ağırlık dosyaları repoda yoktur; `.gitignore` içinde `models/faceforensics*` ve `models/*.zip` vb. tanımlıdır.
+
+---
+
+## Çalıştırma
+
+**Web arayüzü**
+
 ```bash
 streamlit run src/app.py
 ```
 
----
+**Tek video — eğitilmiş füzyon JSON ile tahmin**
 
-## 🎯 Uygulamalar
-- Dijital adli bilişim
-- Medya doğrulama
-- Hukuki ön inceleme
-- Akademik multimodal AI araştırmaları
+```bash
+python infer/predict_video.py --video path/to/video.mp4 --model-json models/fusion_model.json
+```
 
-## 🚀 Gelecek Çalışmalar
-- Göz kırpma & baş-poz anomali tespiti
-- Zamansal transformer füzyonu
-- DFDC / FaceForensics++ benchmarkları
+`models/fusion_model.json` yerelde üretilmelidir (`train/auto_select_fusion_model.py` veya ilgili script’ler). Özellik önbelleği `data/feature_cache.csv` büyük olabilir ve **Git’e alınmaz**.
 
 ---
 
-## 📊 Çıktılar
-- Final deepfake skoru (0–1)
-- Modalite bazlı skorlar
-- Görsel açıklamalar
-- Metinsel gerekçe
+## Araştırma / yeniden üretim (kısa yol haritası)
+
+1. `data/avlips_metadata.csv` ve videolar hazır.
+2. Özellik çıkarma ve CSV önbellek (proje script’leri / `data_tools`).
+3. `train/train_fusion_from_metadata.py` ve `train/auto_select_fusion_model.py` ile lojistik füzyon ve arama raporu.
+4. `eval/train_fusion_histgb.py`, `eval/fusion_cv.py`, `eval/fusion_calibration.py` ile HistGB, CV ve kalibrasyon.
+
+Ayrıntılı komutlar ve tablolar: [results/v2/SUMMARY.md](results/v2/SUMMARY.md).
 
 ---
 
-## ✨ Katkılar
-- Paralel multimodal analiz hattı
-- Grad-CAM ile frame-level açıklanabilirlik
-- Dudak–ses hizalama ile senkron uyumsuzluk tespiti
-- LLM tabanlı semantik açıklama katmanı
-- Otomatik PDF raporlama
+## Repoda olmayan / gizlenen dosyalar
+
+`.gitignore` özeti: `data/feature_cache*`, `models/*.json` (kök), `models/*.zip`, FaceForensics ağırlık klasörleri, `logs/`, `*.log`, `venv` vb. Bu nedenle klon sonrası **ağırlık ve fusion_model** ayrıca yerleştirilmelidir.
 
 ---
 
-## 👩‍💻 Geliştirici
+## Veri ve etik
+
+Yeni bir kamusal veri seti yayınlanmamıştır; akademik çalışmada **AVLips** (ve benzeri) kaynaklı bölünmeler ve metadata kullanılır. FaceForensics++ ağırlıkları yalnızca çıkarım içindir ve lisanslarına tabidir.
+
+---
+
+## Uygulama alanları
+
+Dijital adli tıp, medya doğrulama, hukuki ön inceleme, çok modlu güvenilir AI araştırmaları.
+
+---
+
+## Gelecek çalışmalar
+
+- `Sv` için hedef veri setinde ince ayar; çapraz veri seti (DFDC, Celeb-DF) testleri
+- SyncNet benzeri öğrenilmiş lip-sync gömlekleri
+- HistGB+Platt’ın `infer/predict_video.py` ile aynı API’de sunulması
+
+---
+
+## Katkılar (özet)
+
+Paralel multimodal analiz, Grad-CAM, dudak–ses hizası, isteğe bağlı LLM katmanı, PDF raporu; v2 ile birlikte ölçeklenebilir füzyon değerlendirmesi, Sl iyileştirmesi ve kalibre olasılık raporları.
+
+---
+
+## Geliştirici
+
 **Büşra Mina Al**  
-Artificial Intelligence & Industrial Engineering  
-Ostim Teknik Üniversitesi
+Artificial Intelligence & Industrial Engineering, Ostim Teknik Üniversitesi
 
 ---
 
-## 📝 Lisans
+## Lisans
+
 Bu proje **akademik ve araştırma amaçlı** kullanım içindir.
 
 > Trustworthy AI requires explainable decisions.
