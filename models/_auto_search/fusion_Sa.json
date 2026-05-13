@@ -1,0 +1,47 @@
+{
+  "feature_names": [
+    "Sa"
+  ],
+  "feature_expansion": "none",
+  "weights": [
+    0.01665710354830167
+  ],
+  "bias": 8.108131452687193e-06,
+  "threshold": 0.51,
+  "standardize": true,
+  "scaler_mean": [
+    0.03218794714570976
+  ],
+  "scaler_std": [
+    0.017064715877064346
+  ],
+  "train_config": {
+    "lr": 0.03,
+    "epochs": 1200,
+    "l2": 0.01,
+    "pos_weight": 0.8074048913043478,
+    "pos_weight_auto": true,
+    "threshold_objective": "balanced_acc",
+    "feature_expansion": "none"
+  },
+  "metrics": {
+    "val": {
+      "loss": 0.6931166182590516,
+      "acc": 0.4512730538845062,
+      "balanced_acc": 0.5026475816249867,
+      "precision": 0.63157894733518,
+      "recall": 0.019047619047588813,
+      "f1": 0.03697996912640759,
+      "auc": 0.5095175725824057
+    },
+    "test": {
+      "loss": 0.6929648276443172,
+      "acc": 0.4544658362865448,
+      "balanced_acc": 0.5052277240000079,
+      "precision": 0.6551724137705113,
+      "recall": 0.030063291139192937,
+      "f1": 0.057488653471149245,
+      "auc": 0.5089010920824026
+    }
+  }
+}

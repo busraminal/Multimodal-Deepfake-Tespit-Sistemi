@@ -10,6 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
 from src.analyze_video import analyze
+from src.fusion_expand import expand_features
 
 
 def _sigmoid(z: float) -> float:
@@ -29,6 +30,8 @@ def main() -> None:
     scores = result.get("scores", {})
 
     feats = np.array([float(scores.get(name, 0.0)) for name in model["feature_names"]], dtype=np.float64)
+    expansion = str(model.get("feature_expansion") or "none").strip().lower()
+    feats = expand_features(feats, expansion).reshape(-1)
     if bool(model.get("standardize", False)):
         mu = np.array(model.get("scaler_mean") or [], dtype=np.float64)
         sigma = np.array(model.get("scaler_std") or [], dtype=np.float64)

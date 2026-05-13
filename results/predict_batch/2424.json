@@ -1,0 +1,64 @@
+{
+  "video_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\AVLips v1.0\\AVLips\\1_fake\\2424.mp4",
+  "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\fusion_model.json",
+  "modal_scores": {
+    "Sv": 0.4111929613351822,
+    "Sl": 0.0,
+    "Sh": 0.06042938189952752,
+    "Sa": 0.02865920215845108
+  },
+  "p_fake": 0.3417526423774254,
+  "threshold": 0.54,
+  "label": "REAL",
+  "pipeline_details": {
+    "video_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\AVLips v1.0\\AVLips\\1_fake\\2424.mp4",
+    "scores": {
+      "Sv": 0.4111929613351822,
+      "Sl": 0.0,
+      "Sb": 0.9822162877180841,
+      "Sh": 0.06042938189952752,
+      "Sa": 0.02865920215845108,
+      "Sf": 0.38526335051370586
+    },
+    "weights": {
+      "v": 0.55,
+      "l": 0.0,
+      "b": 0.15,
+      "h": 0.1,
+      "a": 0.2
+    },
+    "has_speech": false,
+    "verdict": "REAL",
+    "verdict_message": "Sessiz video. Görsel artefaktlar sıkıştırma / ışık kaynaklı.",
+    "top_suspicious_frames": [
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_3olos3rz\\frames\\frame_00022.jpg",
+        0.506657600402832
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_3olos3rz\\frames\\frame_00021.jpg",
+        0.48836737871170044
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_3olos3rz\\frames\\frame_00027.jpg",
+        0.46206289529800415
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_3olos3rz\\frames\\frame_00019.jpg",
+        0.452690064907074
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_3olos3rz\\frames\\frame_00024.jpg",
+        0.44208791851997375
+      ]
+    ],
+    "audio_details": {
+      "hf_ratio": 0.0,
+      "flatness": 0.02865920215845108,
+      "hf_n": 0.0,
+      "flat_n": 0.0716480053961277
+    },
+    "used_fallback_pipeline": false,
+    "pipeline_error": ""
+  }
+}

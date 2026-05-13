@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import List, Tuple
 
@@ -63,6 +64,16 @@ def visual_score(frames_dir, topk=3, save_gradcam=True, out_dir="data/gradcam"):
     if not scored:
         return 0.0, []
 
-    sv = float(np.mean([score for _, score in scored]))
+    arr = np.array([score for _, score in scored], dtype=np.float64)
+    mean_all = float(np.mean(arr))
+    # DF_VISUAL_SV_TOPQ_BLEND=0.35 .. 0.65: üst çeyrek ortalaması ile karıştır (şüpheli karelere ağırlık).
+    blend = float(os.environ.get("DF_VISUAL_SV_TOPQ_BLEND", "0").strip() or "0")
+    blend = float(np.clip(blend, 0.0, 1.0))
+    if blend > 1e-12 and arr.size >= 4:
+        k = max(1, int(np.ceil(arr.size * 0.25)))
+        top_mean = float(np.mean(np.sort(arr)[-k:]))
+        sv = float(np.clip((1.0 - blend) * mean_all + blend * top_mean, 0.0, 1.0))
+    else:
+        sv = mean_all
     top_frames = sorted(scored, key=lambda item: item[1], reverse=True)[: max(1, topk)]
     return sv, top_frames

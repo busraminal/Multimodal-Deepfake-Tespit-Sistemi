@@ -1,0 +1,42 @@
+{
+  "classifier": "HistGradientBoostingClassifier",
+  "feature_names": [
+    "Sv",
+    "Sl",
+    "Sh",
+    "Sa",
+    "Sf"
+  ],
+  "feature_expansion": "none",
+  "standardize": true,
+  "threshold_val_tuned": 0.4099999999999999,
+  "train_config": {
+    "max_depth": 6,
+    "max_iter": 250,
+    "learning_rate": 0.06,
+    "random_state": 42,
+    "class_weight": "balanced"
+  },
+  "metrics": {
+    "val": {
+      "acc": 0.5961369622475856,
+      "balanced_acc": 0.5749243770844938,
+      "f1": 0.679665737668124,
+      "tp": 488,
+      "fp": 318,
+      "tn": 191,
+      "fn": 142,
+      "auc": 0.6065674992983439
+    },
+    "test": {
+      "acc": 0.5665499124343257,
+      "balanced_acc": 0.5434723256381945,
+      "f1": 0.6597938139406988,
+      "tp": 480,
+      "fp": 343,
+      "tn": 167,
+      "fn": 152,
+      "auc": 0.5937391412261109
+    }
+  }
+}

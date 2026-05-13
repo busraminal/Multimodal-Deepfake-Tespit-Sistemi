@@ -18,9 +18,8 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
 from src.analyze_video import analyze
-
-
-ALL_FEATURES = ["Sv", "Sl", "Sb", "Sh", "Sa"]
+from src.fusion_expand import expand_features
+from src.fusion_features import ALL_FUSION_FEATURES, cache_column, cache_load_keys
 
 
 def _sigmoid(z: np.ndarray) -> np.ndarray:
@@ -274,9 +273,10 @@ def _build_feature_cache(
 
 def _read_cache(cache_csv: Path) -> Dict[str, Dict[str, float]]:
     out: Dict[str, Dict[str, float]] = {}
+    keys = cache_load_keys()
     with cache_csv.open("r", encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
-            out[row["video_path"]] = {k: float(row[k]) for k in [*ALL_FEATURES, "Sf_pipeline"]}
+            out[row["video_path"]] = {k: float(row[k]) for k in keys}
     return out
 
 
@@ -291,7 +291,7 @@ def _xy(rows: List[Dict[str, str]], cache: Dict[str, Dict[str, float]], feature_
         video_path = row["video_path"]
         if video_path not in cache:
             continue
-        xs.append([cache[video_path][f] for f in feature_names])
+        xs.append([cache[video_path][cache_column(f)] for f in feature_names])
         ys.append(float(row["label"]))
     if not xs:
         raise RuntimeError("No matched rows between metadata and feature cache.")
@@ -315,7 +315,7 @@ def main() -> None:
     parser.add_argument(
         "--features",
         default="Sv",
-        help="Comma-separated fusion features. Options: Sv,Sl,Sb,Sh,Sa (default: Sv)",
+        help="Comma-separated fusion features. Options: Sv,Sl,Sb,Sh,Sa,Sf (Sf uses cached Sf_pipeline; default: Sv)",
     )
     parser.add_argument("--lr", type=float, default=0.05)
     parser.add_argument("--epochs", type=int, default=500)
@@ -324,7 +324,12 @@ def main() -> None:
         "--pos-weight",
         type=float,
         default=1.0,
-        help="Positive class weight (>1 boosts fake recall, <1 boosts precision).",
+        help="Positive class weight (>1 boosts fake recall, <1 boosts precision). Ignored if --pos-weight-auto.",
+    )
+    parser.add_argument(
+        "--pos-weight-auto",
+        action="store_true",
+        help="Set pos_weight to (n_negative / n_positive) on the train split (common default for imbalanced BCE).",
     )
     parser.add_argument(
         "--standardize",
@@ -353,17 +358,23 @@ def main() -> None:
         default="balanced_acc",
         help="Validation metric to choose decision threshold.",
     )
+    parser.add_argument(
+        "--expansion",
+        choices=["none", "poly2"],
+        default="none",
+        help="Augment base scores before standardize/fit: poly2 adds squares and pairwise products.",
+    )
     args = parser.parse_args()
 
     metadata_path = Path(args.metadata_csv)
     cache_path = Path(args.cache_csv)
     out_model = Path(args.out_model)
     feature_names = [x.strip() for x in args.features.split(",") if x.strip()]
-    invalid_features = [x for x in feature_names if x not in ALL_FEATURES]
+    invalid_features = [x for x in feature_names if x not in ALL_FUSION_FEATURES]
     if not feature_names:
         raise ValueError("No feature selected. Use --features Sv or e.g. --features Sv,Sh,Sa")
     if invalid_features:
-        raise ValueError(f"Unknown features: {invalid_features}. Allowed: {ALL_FEATURES}")
+        raise ValueError(f"Unknown features: {invalid_features}. Allowed: {ALL_FUSION_FEATURES}")
 
     if args.reset_cache:
         cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -386,19 +397,35 @@ def main() -> None:
     _build_feature_cache(cache_rows, cache_path, show_progress=not args.no_progress)
     cache = _read_cache(cache_path)
 
+    expansion = str(args.expansion or "none").strip().lower()
+
     print(
         "\n=== Faz 2: Logistic fusion ===\n"
         f"  features: {feature_names}\n"
+        f"  expansion: {expansion}\n"
         f"  train: {len(train_rows)} satir (cache eslesen: {_count_matched(train_rows, cache)})\n"
         f"  val:   {len(val_rows)} satir (cache eslesen: {_count_matched(val_rows, cache)})\n"
         f"  test:  {len(test_rows)} satir (cache eslesen: {_count_matched(test_rows, cache)})\n"
-        f"  lr={args.lr} epochs={args.epochs} l2={args.l2} pos_weight={args.pos_weight} standardize={args.standardize}\n",
+        f"  lr={args.lr} epochs={args.epochs} l2={args.l2} pos_weight={'auto' if args.pos_weight_auto else args.pos_weight} standardize={args.standardize}\n",
         flush=True,
     )
 
     x_train, y_train = _xy(train_rows, cache, feature_names)
     x_val, y_val = _xy(val_rows, cache, feature_names)
     x_test, y_test = _xy(test_rows, cache, feature_names)
+
+    pos_weight = float(args.pos_weight)
+    if args.pos_weight_auto:
+        n_pos = float((y_train > 0.5).sum())
+        n_neg = float((y_train <= 0.5).sum())
+        pos_weight = float(n_neg / max(n_pos, 1.0))
+        print(f"  pos_weight_auto: n_pos={int(n_pos)} n_neg={int(n_neg)} -> pos_weight={pos_weight:.4f}\n", flush=True)
+
+    if expansion != "none":
+        x_train = expand_features(x_train, expansion)
+        x_val = expand_features(x_val, expansion)
+        x_test = expand_features(x_test, expansion)
+
     scaler_mean = None
     scaler_std = None
     if args.standardize:
@@ -412,7 +439,7 @@ def main() -> None:
         lr=args.lr,
         epochs=args.epochs,
         l2=args.l2,
-        pos_weight=args.pos_weight,
+        pos_weight=pos_weight,
         show_progress=not args.no_progress,
     )
 
@@ -433,6 +460,7 @@ def main() -> None:
         return {
             "loss": _bce_loss(y, p),
             "acc": _accuracy(y, p, thr),
+            "balanced_acc": _balanced_acc(y, p, thr),
             "precision": pr,
             "recall": rc,
             "f1": _f1(y, p, thr),
@@ -446,6 +474,7 @@ def main() -> None:
 
     payload = {
         "feature_names": feature_names,
+        "feature_expansion": expansion,
         "weights": w.tolist(),
         "bias": float(b),
         "threshold": float(threshold),
@@ -456,8 +485,10 @@ def main() -> None:
             "lr": args.lr,
             "epochs": args.epochs,
             "l2": args.l2,
-            "pos_weight": args.pos_weight,
+            "pos_weight": pos_weight,
+            "pos_weight_auto": bool(args.pos_weight_auto),
             "threshold_objective": args.threshold_objective,
+            "feature_expansion": expansion,
         },
         "metrics": metrics,
     }

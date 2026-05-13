@@ -5,6 +5,45 @@ import cv2
 import mediapipe as mp
 from scipy.spatial.distance import euclidean
 
+# Ses–dudak ölçümü iyileştirildiğinde feature_cache yenilenmeli (refresh_sl_cache / tam analiz).
+_LIP_SYNC_SMOOTH_WIN = max(3, int(os.environ.get("DF_LIP_SYNC_SMOOTH_WIN", "5")))
+_VELOCITY_BLEND = float(os.environ.get("DF_LIP_SYNC_VELOCITY_BLEND", "0.45"))
+_MIN_LIP_VAR = float(os.environ.get("DF_LIP_SYNC_MIN_VAR", "1e-4"))
+_MIN_AUDIO_VAR = float(os.environ.get("DF_LIP_SYNC_MIN_AUDIO_VAR", "1e-8"))
+
+
+def has_speech_like_audio(
+    audio_path: str,
+    *,
+    sr: int = 16000,
+    frame_ms: float = 25.0,
+    hop_frac: float = 0.5,
+    min_duration_sec: float = 0.25,
+    min_active_frac: float = 0.06,
+) -> bool:
+    """
+    Hafif enerji/VAD: konuşma benzeri aktivite yoksa lip-sync skorunu üretmeyelim
+    (sessiz/zayıf ses/gürültüde korelasyon Sahte Sl üretmesin).
+
+    Cache/fusion bu mantıkla değiştiği için özellik önbelleğini yeniden üretmek gerekir.
+    """
+    wav, _sr = librosa.load(audio_path, sr=sr, mono=True)
+    if wav.size < int(sr * min_duration_sec):
+        return False
+    frame = max(1, int(sr * frame_ms / 1000.0))
+    hop = max(1, int(frame * hop_frac))
+    rms_list = []
+    for i in range(0, len(wav) - frame + 1, hop):
+        chunk = wav[i : i + frame]
+        rms_list.append(float(np.sqrt(np.mean(chunk.astype(np.float64) ** 2))))
+    if len(rms_list) < 3:
+        return False
+    rms = np.array(rms_list, dtype=np.float64)
+    floor = float(np.percentile(rms, 25))
+    thresh = max(floor * 4.0, 1e-5)
+    active = rms > thresh
+    return float(np.mean(active.astype(np.float64))) >= min_active_frac
+
 # =====================================================
 # 1) Dudak landmarkları + audio enerji analizi
 # =====================================================
@@ -84,18 +123,21 @@ def lip_openings(frames_dir, fps=25):
     return arr
 
 
-# -----------------------------------------------------
-# 3) Korelasyon (lip-sync senkronu)
-# -----------------------------------------------------
-def lip_sync_correlation(audio_energy, lip_motion, max_lag=6):
-    # ikisini aynı uzunluğa getir
-    L = min(len(audio_energy), len(lip_motion))
-    a = audio_energy[:L]
-    v = lip_motion[:L]
+def _smooth_1d(x: np.ndarray, win: int) -> np.ndarray:
+    x = np.asarray(x, dtype=np.float64)
+    if win <= 1 or len(x) < 3:
+        return x
+    win = min(win | 1, len(x))
+    k = np.ones(win, dtype=np.float64) / float(win)
+    return np.convolve(x, k, mode="same")
+
+
+def _lagged_best_abs_corr(a: np.ndarray, v: np.ndarray, max_lag: int) -> float:
+    L = min(len(a), len(v))
+    a = a[:L]
+    v = v[:L]
     if L < 4:
         return 0.5
-
-    # Farkli AV gecikmelerine toleransli sync olcumu.
     best = -1.0
     max_lag = int(max(0, min(max_lag, L // 3)))
     for lag in range(-max_lag, max_lag + 1):
@@ -113,12 +155,44 @@ def lip_sync_correlation(audio_energy, lip_motion, max_lag=6):
         c = np.corrcoef(aa, vv)[0, 1]
         if np.isnan(c):
             c = 0.0
-        # anti-sync de uyumsuzluk göstergesi olabildiği için mutlak korelasyon.
         best = max(best, abs(float(c)))
-
     if best < 0:
         best = 0.0
     return float(np.clip(best, 0.0, 1.0))
+
+
+# -----------------------------------------------------
+# 3) Korelasyon (lip-sync senkronu)
+# -----------------------------------------------------
+def lip_sync_correlation(audio_energy, lip_motion, max_lag=6):
+    """
+    Ses enerji zarfı ile dudak açılımı serisinin (lag ile) mutlak korelasyon tepe değeri.
+    Çok düşük varyans veya statik dudakta güven düşük → ~0.5 (belirsiz).
+    """
+    L = min(len(audio_energy), len(lip_motion))
+    a = np.asarray(audio_energy[:L], dtype=np.float64)
+    v = np.asarray(lip_motion[:L], dtype=np.float64)
+    if L < 4:
+        return 0.5
+
+    if float(np.var(a)) < _MIN_AUDIO_VAR or float(np.var(v)) < _MIN_LIP_VAR:
+        return 0.5
+
+    a = _smooth_1d(a, _LIP_SYNC_SMOOTH_WIN)
+    v = _smooth_1d(v, _LIP_SYNC_SMOOTH_WIN)
+
+    sync_raw = _lagged_best_abs_corr(a, v, max_lag=max_lag)
+
+    da = np.diff(a)
+    dv = np.diff(v)
+    w = float(np.clip(_VELOCITY_BLEND, 0.0, 1.0))
+    if len(da) >= 4 and len(dv) >= 4 and w > 1e-6:
+        sync_vel = _lagged_best_abs_corr(da, dv, max_lag=max(2, max_lag - 1))
+        sync_score = (1.0 - w) * sync_raw + w * sync_vel
+    else:
+        sync_score = sync_raw
+
+    return float(np.clip(sync_score, 0.0, 1.0))
 
 
 # -----------------------------------------------------

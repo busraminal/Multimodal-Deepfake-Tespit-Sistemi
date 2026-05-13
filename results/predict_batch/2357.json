@@ -1,0 +1,64 @@
+{
+  "video_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\AVLips v1.0\\AVLips\\0_real\\2357.mp4",
+  "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\fusion_model.json",
+  "modal_scores": {
+    "Sv": 0.4127986526604995,
+    "Sl": 1.0,
+    "Sh": 0.5,
+    "Sa": 0.03371554613113403
+  },
+  "p_fake": 0.5544322913724707,
+  "threshold": 0.54,
+  "label": "UNCERTAIN",
+  "pipeline_details": {
+    "video_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\AVLips v1.0\\AVLips\\0_real\\2357.mp4",
+    "scores": {
+      "Sv": 0.4127986526604995,
+      "Sl": 1.0,
+      "Sb": 0.5,
+      "Sh": 0.5,
+      "Sa": 0.03371554613113403,
+      "Sf": 0.4908167256168949
+    },
+    "weights": {
+      "v": 0.45,
+      "l": 0.2,
+      "b": 0.1,
+      "h": 0.1,
+      "a": 0.15
+    },
+    "has_speech": true,
+    "verdict": "REAL",
+    "verdict_message": "Tutarlı yüz, düşük yapaylık izi.",
+    "top_suspicious_frames": [
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_0bax7vra\\frames\\frame_00021.jpg",
+        0.4617689251899719
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_0bax7vra\\frames\\frame_00063.jpg",
+        0.4300815761089325
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_0bax7vra\\frames\\frame_00022.jpg",
+        0.42497411370277405
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_0bax7vra\\frames\\frame_00067.jpg",
+        0.42033615708351135
+      ],
+      [
+        "C:\\Users\\busra\\AppData\\Local\\Temp\\df_0bax7vra\\frames\\frame_00066.jpg",
+        0.42010611295700073
+      ]
+    ],
+    "audio_details": {
+      "hf_ratio": 0.0,
+      "flatness": 0.03371554613113403,
+      "hf_n": 0.0,
+      "flat_n": 0.08428886532783508
+    },
+    "used_fallback_pipeline": false,
+    "pipeline_error": ""
+  }
+}

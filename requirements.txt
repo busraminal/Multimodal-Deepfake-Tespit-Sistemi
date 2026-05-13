@@ -5,3 +5,5 @@ ffmpeg-python
 sentence-transformers
 openai-whisper
 numpy
+scikit-learn
+matplotlib

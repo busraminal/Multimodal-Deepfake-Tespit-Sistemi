@@ -116,15 +116,17 @@ def analyze(video_path: str):
             sh = 0.5
         sa, audio_details = audio_gan_score(audio_path, True)
 
-        # CLI için hızlı mod: transkripsiyon açmadan lip-sync default pas
+        # Dudak-sync yalnızca konuşma benzeri ses varsa (lip_sync.has_speech_like_audio).
+        # Önbellek/fusion dağılımı değişir; özellik cache yenilenip fusion yeniden eğitilmeli.
         has_speech = False
         sl = 0.0
         if os.path.exists(audio_path) and os.path.getsize(audio_path) > 2048:
             try:
-                from src.lip_sync import lip_mismatch_score
+                from src.lip_sync import has_speech_like_audio, lip_mismatch_score
 
-                sl = lip_mismatch_score(audio_path, frames_dir)
-                has_speech = True
+                if has_speech_like_audio(audio_path):
+                    sl = lip_mismatch_score(audio_path, frames_dir)
+                    has_speech = True
             except Exception:
                 sl = 0.0
                 has_speech = False

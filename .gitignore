@@ -3,7 +3,7 @@ __pycache__/
 .venv/ 
 venv/ 
 env/ 
-data/feature_cache*.csv
+data/feature_cache*
 results/predict_*.json
 models/*.json
 models/*.zip
@@ -13,3 +13,5 @@ train/__pycache__/
 infer/__pycache__/
 eval/__pycache__/
 data_tools/__pycache__/
+logs/
+*.log
