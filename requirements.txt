@@ -7,3 +7,5 @@ openai-whisper
 numpy
 scikit-learn
 matplotlib
+streamlit
+plotly

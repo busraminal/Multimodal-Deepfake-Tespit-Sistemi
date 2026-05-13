@@ -140,10 +140,9 @@ Multimodal-Deepfake-Tespit-Sistemi/
 
 ```bash
 pip install -r requirements.txt
-pip install streamlit plotly
 ```
 
-`requirements.txt` çekirdek bilim kütüphanelerini listeler; **Streamlit arayüzü** için `streamlit` ve `plotly` ayrıca yüklenmelidir. Görsel omurga için ağırlık dosyaları repoda yoktur; `.gitignore` içinde `models/faceforensics*` ve `models/*.zip` vb. tanımlıdır.
+`requirements.txt` içinde **Streamlit** ve **Plotly** (arayüz grafikleri) yer alır. PDF raporu için isteğe bağlı: `pip install reportlab`. Görsel omurga ağırlıkları repoda yoktur; `.gitignore` içinde `models/faceforensics*` ve `models/*.zip` vb. tanımlıdır.
 
 ---
 
