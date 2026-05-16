@@ -1,0 +1,174 @@
+{
+  "selection_metric": "val_balanced_acc",
+  "pos_weight_auto": true,
+  "max_combo_size": 6,
+  "standardize": true,
+  "expansion": "none",
+  "search_count": 63,
+  "best_features": [
+    "Sl",
+    "Sa"
+  ],
+  "best_score": 0.5512052889253833,
+  "best_model_source": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sl_Sa.json",
+  "final_model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\fusion_model.json",
+  "top10": [
+    {
+      "features": [
+        "Sl",
+        "Sa"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5512052889253833,
+      "val_balanced_acc": 0.5512052889253833,
+      "test_balanced_acc": 0.5331161578546559,
+      "val_auc": 0.5366108460411018,
+      "test_auc": 0.5107625961777114,
+      "val_f1": 0.6851119889733561,
+      "test_f1": 0.6732154546547493,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sl_Sa.json"
+    },
+    {
+      "features": [
+        "Sl",
+        "Sa",
+        "Sf"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.548779118719247,
+      "val_balanced_acc": 0.548779118719247,
+      "test_balanced_acc": 0.5290580789268842,
+      "val_auc": 0.5406773318364676,
+      "test_auc": 0.5112186646810625,
+      "val_f1": 0.6662097322020142,
+      "test_f1": 0.6608695647284446,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sl_Sa_Sf.json"
+    },
+    {
+      "features": [
+        "Sl",
+        "Sh",
+        "Sa"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5485701811822378,
+      "val_balanced_acc": 0.5485701811822378,
+      "test_balanced_acc": 0.5198188136005348,
+      "val_auc": 0.5536501699566534,
+      "test_auc": 0.522263588979895,
+      "val_f1": 0.7030759568342114,
+      "test_f1": 0.6841448184976832,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sl_Sh_Sa.json"
+    },
+    {
+      "features": [
+        "Sv",
+        "Sl"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5484594754723214,
+      "val_balanced_acc": 0.5484594754723214,
+      "test_balanced_acc": 0.5249782824513588,
+      "val_auc": 0.5403717217076748,
+      "test_auc": 0.5072164308761481,
+      "val_f1": 0.7079975196718603,
+      "test_f1": 0.6906385612088497,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sv_Sl.json"
+    },
+    {
+      "features": [
+        "Sv",
+        "Sl",
+        "Sf"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5484594754723214,
+      "val_balanced_acc": 0.5484594754723214,
+      "test_balanced_acc": 0.5249782824513588,
+      "val_auc": 0.5400286899304582,
+      "test_auc": 0.5067386448250184,
+      "val_f1": 0.7079975196718603,
+      "test_f1": 0.6906385612088497,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sv_Sl_Sf.json"
+    },
+    {
+      "features": [
+        "Sv",
+        "Sl",
+        "Sa"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5480821405173847,
+      "val_balanced_acc": 0.5480821405173847,
+      "test_balanced_acc": 0.5236193844617865,
+      "val_auc": 0.5402844045280201,
+      "test_auc": 0.5082898982377757,
+      "val_f1": 0.7087198511004895,
+      "test_f1": 0.6909765137381605,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sv_Sl_Sa.json"
+    },
+    {
+      "features": [
+        "Sv",
+        "Sl",
+        "Sa",
+        "Sf"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5480821405173847,
+      "val_balanced_acc": 0.5480821405173847,
+      "test_balanced_acc": 0.5236193844617865,
+      "val_auc": 0.5411107992640409,
+      "test_auc": 0.5090562174236788,
+      "val_f1": 0.7087198511004895,
+      "test_f1": 0.6909765137381605,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sv_Sl_Sa_Sf.json"
+    },
+    {
+      "features": [
+        "Sl"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5476595877372602,
+      "val_balanced_acc": 0.5476595877372602,
+      "test_balanced_acc": 0.5273703152138194,
+      "val_auc": 0.5478591698630998,
+      "test_auc": 0.5268584015884837,
+      "val_f1": 0.6952076672497315,
+      "test_f1": 0.6806883360381027,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sl.json"
+    },
+    {
+      "features": [
+        "Sv",
+        "Sl",
+        "Sb",
+        "Sa"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5472105279561831,
+      "val_balanced_acc": 0.5472105279561831,
+      "test_balanced_acc": 0.5249100273011946,
+      "val_auc": 0.5420307481211217,
+      "test_auc": 0.5154535864978903,
+      "val_f1": 0.7033792235515264,
+      "test_f1": 0.6858934164485726,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sv_Sl_Sb_Sa.json"
+    },
+    {
+      "features": [
+        "Sl",
+        "Sf"
+      ],
+      "metric": "val_balanced_acc",
+      "score": 0.5470998222462667,
+      "val_balanced_acc": 0.5470998222462667,
+      "test_balanced_acc": 0.5244105237022916,
+      "val_auc": 0.5360838244924687,
+      "test_auc": 0.5113768925291634,
+      "val_f1": 0.7082818289426384,
+      "test_f1": 0.6917850520247295,
+      "model_path": "C:\\Users\\busra\\Desktop\\projeler\\df\\df_video\\Multimodal-Deepfake-Tespit-Sistemi\\models\\_auto_search\\fusion_Sl_Sf.json"
+    }
+  ]
+}

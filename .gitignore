@@ -4,8 +4,11 @@ __pycache__/
 venv/ 
 env/ 
 data/feature_cache*
+!data/feature_cache.csv
 results/predict_*.json
 models/*.json
+!models/fusion_model.json
+!models/fusion_model_search_report.json
 models/*.zip
 models/faceforensics/
 models/faceforensics_unpack/
