@@ -177,7 +177,7 @@ Ayrıntılı komutlar ve tablolar: [results/v2/SUMMARY.md](results/v2/SUMMARY.md
 
 ## Repoda olmayan / gizlenen dosyalar
 
-`.gitignore` özeti: `data/feature_cache*`, `models/*.json` (kök), `models/*.zip`, FaceForensics ağırlık klasörleri, `logs/`, `*.log`, `venv` vb. Bu nedenle klon sonrası **ağırlık ve fusion_model** ayrıca yerleştirilmelidir.
+`.gitignore` özeti: önbellek yedekleri, `models/_auto_search/`, FaceForensics ağırlıkları, `logs/`, `venv` vb. Repoda **fusion_model.json**, **feature_cache.csv** ve **results/v2/** vardır; FaceForensics ağırlıkları ayrı indirilmelidir.
 
 ---
 
