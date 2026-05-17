@@ -1,20 +1,52 @@
-__pycache__/ 
-*.pyc 
-.venv/ 
-venv/ 
-env/ 
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Ortam / deploy artigi
+.config/
+cloudflared*
+*.log
+server.log
+tunnel.log
+
+# Veri onbellegi (ana CSV repoda; yedekler disarida)
 data/feature_cache*
 !data/feature_cache.csv
-results/predict_*.json
+
+# Modeller: yalnizca uretim + arama raporu
 models/*.json
 !models/fusion_model.json
 !models/fusion_model_search_report.json
+models/_auto_search/
+models/_hparam_tune/
+models/_accuracy_try/
 models/*.zip
 models/faceforensics/
 models/faceforensics_unpack/
+
+# Deney / gecici sonuclar
+results/predict_*/
+results/predict_*.json
+results/smoke_*.json
+results/fake_*.json
+results/real_*.json
+results/fusion_errors/
+results/fusion_errors_v2/*.csv
+results/v2_oldSl/
+results/fusion_eval_report.json
+results/fusion_histgb_baseline.json
+logs/
+screenshots/*.mp4
+
+# Streamlit ornek veri setleri (projeye ait degil)
+sample_data/*.csv
+sample_data/*.json
+
+# Notebook / pycache
+df_llm.ipynb
 train/__pycache__/
 infer/__pycache__/
 eval/__pycache__/
 data_tools/__pycache__/
-logs/
-*.log

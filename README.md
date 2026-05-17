@@ -109,8 +109,8 @@ Multimodal-Deepfake-Tespit-Sistemi/
 ├── scripts/                # PowerShell boru hatları (fusion, Sl yenileme)
 ├── data/                   # avlips_metadata.csv (repoda); feature_cache* .gitignore
 ├── docs/                   # teknik makale (Türkçe)
-├── results/                # v2 metrikler, figürler, hata analizi çıktıları
-├── models/                 # fusion_model.json tipik olarak .gitignore; _auto_search deney JSON’ları repoda olabilir
+├── results/v2/             # metrik JSON, poster figürleri, SUMMARY
+├── models/                 # fusion_model.json + fusion_model_search_report.json
 ├── network/models/         # TransferModel vb.
 ├── sample_data/, assets/, screenshots/
 ├── requirements.txt
